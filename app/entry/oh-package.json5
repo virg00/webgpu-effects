@@ -6,7 +6,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@virg00/webgpu-effects": "file:../webgpu-effects",
+    "@virgo/webgpu-effects": "file:../webgpu-effects",
     "@quizzyjoy/shaderport": "file:../shaderport",
     "libshaderport_gles.so": "file:./src/main/cpp/types/libshaderport_gles"
   }

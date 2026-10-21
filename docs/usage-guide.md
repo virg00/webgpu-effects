@@ -1,13 +1,13 @@
 # 使用指南
 
-本文覆盖 `@virg00/webgpu-effects` 的常见用法。API 一览见 [README](../README.md#api-参考)，效果与参数见 [effects.md](effects.md)
+本文覆盖 `@virgo/webgpu-effects` 的常见用法。API 一览见 [README](../README.md#api-参考)，效果与参数见 [effects.md](effects.md)
 （参数的完整类型在包内 `components.ts` 的 `<Effect>Props` 中，IDE 可直接补全）。
 
 ## 1. 初始化
 
 ```ts
 // entry/src/main/ets/entryability/EntryAbility.ets
-import { initShaders } from '@virg00/webgpu-effects';
+import { initShaders } from '@virgo/webgpu-effects';
 
 onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
   initShaders(this.context);

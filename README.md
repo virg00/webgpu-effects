@@ -7,7 +7,7 @@
 ![API](https://img.shields.io/badge/HarmonyOS-API%2024%2B-green)
 ![GPU](https://img.shields.io/badge/GPU-WebGPU%20on%20Vulkan-purple)
 
-> **主仓**：[GitHub `virg00/webgpu-effects`](https://github.com/virg00/webgpu-effects)；OHPM 包：`@virg00/webgpu-effects`。
+> **主仓**：[GitHub `virg00/webgpu-effects`](https://github.com/virg00/webgpu-effects)；OHPM 包：`@virgo/webgpu-effects`。
 
 `webgpu-effects` is an independent project. It is **not affiliated with, endorsed by, or sponsored by** Shader Effects Inc.
 or the `shader-effects-inc/shaders` project. 本项目是独立的第三方项目，与上游没有任何组织关系，见 [与上游的关系](docs/provenance-and-naming.md)。
@@ -75,20 +75,20 @@ ShaderView (ArkUI)                 XComponent、触摸、布局、可见性
 ## 安装
 
 ```bash
-ohpm install @virg00/webgpu-effects
+ohpm install @virgo/webgpu-effects
 ```
 
 本地开发（HAR 源码）：
 
 ```json5
 // entry/oh-package.json5
-"dependencies": { "@virg00/webgpu-effects": "file:../webgpu-effects" }
+"dependencies": { "@virgo/webgpu-effects": "file:../webgpu-effects" }
 ```
 
 ## 快速开始
 
 ```ts
-import { ShaderView, LinearGradient, CursorTrail, initShaders } from '@virg00/webgpu-effects';
+import { ShaderView, LinearGradient, CursorTrail, initShaders } from '@virgo/webgpu-effects';
 
 // EntryAbility.onCreate：传入 Context（用于读取 rawfile 图片、相机等），调用一次即可
 initShaders(this.context);
@@ -216,7 +216,7 @@ scripts/build-wgpu.sh        # 交叉编译 wgpu-native（仓库已附带 arm64 
 
 | 路径 | 内容 |
 |---|---|
-| `app/webgpu-effects` | 库（HAR，`@virg00/webgpu-effects`）：`ShaderView`、生成的工厂函数、引擎、原生 WebGPU |
+| `app/webgpu-effects` | 库（HAR，`@virgo/webgpu-effects`）：`ShaderView`、生成的工厂函数、引擎、原生 WebGPU |
 | `app/entry` | 演示应用：效果菜单、详情与参数编辑、与 shaderport 对比、对比分析 |
 | `app/shaderport` | shaderport 0.1.0 HAR（Apache-2.0），仅供演示应用的对比页使用 |
 | `upstream/` | 上游引擎 bundle、效果注册表及其 MIT 许可 |

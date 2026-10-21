@@ -1,4 +1,4 @@
-// @virg00/webgpu-effects — public API.
+// @virgo/webgpu-effects — public API.
 export { ShaderView, ShaderController } from './src/main/ets/components/ShaderView';
 export * from './src/main/ets/components/components';
 export * from './src/main/ets/components/types';

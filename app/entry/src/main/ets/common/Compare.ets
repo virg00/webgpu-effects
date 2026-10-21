@@ -1,6 +1,6 @@
 import { common } from '@kit.AbilityKit';
 import { util } from '@kit.ArkTS';
-import { ShaderNode } from '@virg00/webgpu-effects';
+import { ShaderNode } from '@virgo/webgpu-effects';
 import { EffectSummary, EffectSpec, getEffect, initShaderPort, listEffects } from '@quizzyjoy/shaderport';
 import { CatalogEntry, loadCatalog } from './Catalog';
 

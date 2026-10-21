@@ -1,6 +1,6 @@
 import { router } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
-import { ShaderView, ShaderController, ShaderNode, Position } from '@virg00/webgpu-effects';
+import { ShaderView, ShaderController, ShaderNode, Position } from '@virgo/webgpu-effects';
 import {
   CatalogEntry, CatalogProp, PropOption, categoryLabel, isInteractive, loadCatalog, previewLayers,
 } from '../common/Catalog';

@@ -1,5 +1,5 @@
 import { router } from '@kit.ArkUI';
-import { ShaderView, ShaderNode, LinearGradient } from '@virg00/webgpu-effects';
+import { ShaderView, ShaderNode, LinearGradient } from '@virgo/webgpu-effects';
 import { loadCatalog, previewLayers, CatalogEntry } from '../common/Catalog';
 import { common } from '@kit.AbilityKit';
 

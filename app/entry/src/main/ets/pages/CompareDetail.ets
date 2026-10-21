@@ -1,7 +1,7 @@
 import { router } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
-import { ShaderView, ShaderController, ShaderNode } from '@virg00/webgpu-effects';
+import { ShaderView, ShaderController, ShaderNode } from '@virgo/webgpu-effects';
 import { BenchSide, CompareItem, claudeLayers, compareItems } from '../common/Compare';
 import { ShaderPortView, shaderPortStats, PortStats } from '../common/ShaderPortView';
 import { categoryLabel } from '../common/Catalog';

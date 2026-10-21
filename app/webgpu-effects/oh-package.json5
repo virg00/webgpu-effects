@@ -1,5 +1,5 @@
 {
-  "name": "@virg00/webgpu-effects",
+  "name": "@virgo/webgpu-effects",
   "version": "1.0.0",
   "description": "199 GPU effects (gradients, noise, glass, metal, light, fluids, particles, distortions, transitions, blurs, cursor effects) as one ArkUI component, running the upstream shaders.com engine on a bundled WebGPU (wgpu / Vulkan).",
   "main": "Index.ets",

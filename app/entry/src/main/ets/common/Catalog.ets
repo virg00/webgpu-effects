@@ -1,6 +1,6 @@
 import { util } from '@kit.ArkTS';
 import { common } from '@kit.AbilityKit';
-import { ShaderNode, MeshGradient, ImageTexture } from '@virg00/webgpu-effects';
+import { ShaderNode, MeshGradient, ImageTexture } from '@virgo/webgpu-effects';
 
 export interface PropOption {
   label: string;

@@ -1,7 +1,7 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { window } from '@kit.ArkUI';
 import BuildProfile from 'BuildProfile';
-import { initShaders, setDebug } from '@virg00/webgpu-effects';
+import { initShaders, setDebug } from '@virgo/webgpu-effects';
 
 export default class EntryAbility extends UIAbility {
   private page: string = 'pages/Index';

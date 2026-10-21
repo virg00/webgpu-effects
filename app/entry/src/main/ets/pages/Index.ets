@@ -1,6 +1,6 @@
 import { router } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
-import { ShaderView, ShaderNode } from '@virg00/webgpu-effects';
+import { ShaderView, ShaderNode } from '@virgo/webgpu-effects';
 import { CatalogEntry, CATEGORIES, categoryLabel, isInteractive, loadCatalog, previewLayers } from '../common/Catalog';
 
 const ALL = '推荐';

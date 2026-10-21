@@ -1,4 +1,4 @@
-# @virg00/webgpu-effects
+# @virgo/webgpu-effects
 
 鸿蒙上的 **WebGPU 实时特效组件**：199 个 GPU 效果（渐变、噪声、玻璃、金属、光影、流体、粒子、扭曲、转场、模糊、跟手效果），
 一个 ArkUI 组件 `ShaderView` 即可使用。效果来自 shaders.com（`shader-effects-inc/shaders`，MIT，v4.0.4）——本包在原生层
@@ -6,7 +6,7 @@
 
 - 效果数：**199**（上游 200 个，仅缺浏览器专属的 `HTMLInCanvas`）
 - 渲染：**WebGPU → Vulkan**（`VK_OHOS_surface` 输出到 XComponent）
-- 包类型：HAR（`@virg00/webgpu-effects@1.0.0`），含 arm64-v8a 原生库
+- 包类型：HAR（`@virgo/webgpu-effects@1.0.0`），含 arm64-v8a 原生库
 - 许可：**MIT**（上游引擎 MIT、wgpu MIT/Apache-2.0，见 [THIRD_PARTY_NOTICES](https://github.com/virg00/webgpu-effects/blob/main/THIRD_PARTY_NOTICES.md)）
 
 `webgpu-effects` is an independent project. It is **not affiliated with, endorsed by, or sponsored by** Shader Effects Inc.
@@ -15,7 +15,7 @@ or the `shader-effects-inc/shaders` project.
 ## 下载安装
 
 ```bash
-ohpm install @virg00/webgpu-effects
+ohpm install @virgo/webgpu-effects
 ```
 
 ## 所需权限
@@ -33,7 +33,7 @@ ohpm install @virg00/webgpu-effects
 
 ```ts
 import { ShaderView, ShaderController, LinearGradient, CursorTrail, Glass, ImageTexture, Blur, Vignette,
-  initShaders } from '@virg00/webgpu-effects';
+  initShaders } from '@virgo/webgpu-effects';
 
 // 1. EntryAbility.onCreate 中调用一次
 initShaders(this.context);

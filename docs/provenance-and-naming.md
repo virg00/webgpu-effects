@@ -35,7 +35,7 @@ README 醒目位置必须包含：
 | 对象 | 名称 |
 |---|---|
 | 仓库 | `virg00/webgpu-effects` |
-| OHPM 包 | `@virg00/webgpu-effects` |
+| OHPM 包 | `@virgo/webgpu-effects` |
 | HAR 模块 | `webgpu_effects` |
 | 原生库 | `libwebgpu_effects.so` |
 | 日志 tag | `webgpu-fx` |

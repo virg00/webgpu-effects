@@ -1,5 +1,5 @@
 #!/bin/bash
-# Build the release HAR of @virg00/webgpu-effects (what `ohpm publish` uploads) into build/har/.
+# Build the release HAR of @virgo/webgpu-effects (what `ohpm publish` uploads) into build/har/.
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
 cd "$ROOT/app"
