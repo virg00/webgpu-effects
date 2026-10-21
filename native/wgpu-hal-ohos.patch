@@ -1,0 +1,211 @@
+diff --git a/a/src/vulkan/adapter.rs b/b/src/vulkan/adapter.rs
+index 7e8182c..fe50b62 100644
+--- a/a/src/vulkan/adapter.rs
++++ b/b/src/vulkan/adapter.rs
+@@ -1427,10 +1427,13 @@ impl PhysicalDeviceProperties {
+         let max_memory_allocation_size = self
+             .maintenance_3
+             .map(|maintenance_3| maintenance_3.max_memory_allocation_size)
++            // Some drivers (OpenHarmony emulator) advertise the extension but leave the property 0.
++            .filter(|&size| size > 0)
+             .unwrap_or(u64::MAX);
+         let max_buffer_size = self
+             .maintenance_4
+             .map(|maintenance_4| maintenance_4.max_buffer_size)
++            .filter(|&size| size > 0)
+             .unwrap_or(u64::MAX);
+         let max_buffer_size = max_buffer_size.min(max_memory_allocation_size);
+ 
+@@ -1568,6 +1571,7 @@ impl PhysicalDeviceProperties {
+         let max_per_set_descriptors = self
+             .maintenance_3
+             .map(|maintenance_3| maintenance_3.max_per_set_descriptors)
++            .filter(|&count| count > 0)
+             // The lowest value seen in reports is 312, use 256 as a safe default.
+             // https://vulkan.gpuinfo.org/displayextensionproperty.php?extensionname=VK_KHR_maintenance3&extensionproperty=maxPerSetDescriptors&platform=all
+             // https://vulkan.gpuinfo.org/displaycoreproperty.php?core=1.1&name=maxPerSetDescriptors&platform=all
+@@ -2930,7 +2934,18 @@ impl crate::Adapter for super::Adapter {
+                 .raw
+                 .get_physical_device_format_properties(self.raw, vk_format)
+         };
+-        let features = properties.optimal_tiling_features;
++        let mut features = properties.optimal_tiling_features;
++        // Vulkan 1.0 semantics (and the OpenHarmony emulator driver): TRANSFER_* bits are not
++        // reported, and any sampled/attachment format may be copied.
++        if !features.intersects(vk::FormatFeatureFlags::TRANSFER_SRC | vk::FormatFeatureFlags::TRANSFER_DST)
++            && features.intersects(
++                vk::FormatFeatureFlags::SAMPLED_IMAGE
++                    | vk::FormatFeatureFlags::COLOR_ATTACHMENT
++                    | vk::FormatFeatureFlags::DEPTH_STENCIL_ATTACHMENT,
++            )
++        {
++            features |= vk::FormatFeatureFlags::TRANSFER_SRC | vk::FormatFeatureFlags::TRANSFER_DST;
++        }
+ 
+         let mut flags = Tfc::empty();
+         flags.set(
+diff --git a/a/src/vulkan/device.rs b/b/src/vulkan/device.rs
+index c72a986..1a910e6 100644
+--- a/a/src/vulkan/device.rs
++++ b/b/src/vulkan/device.rs
+@@ -990,9 +990,12 @@ impl crate::Device for super::Device {
+         if let Some(ref allocation) = buffer.allocation {
+             let mut allocation = allocation.lock();
+             if let super::BufferMemoryBacking::Managed(ref mut allocation) = *allocation {
+-                let is_coherent = allocation
+-                    .memory_properties()
+-                    .contains(vk::MemoryPropertyFlags::HOST_COHERENT);
++                // The OpenHarmony emulator only forwards guest writes to the host on an explicit
++                // flush, even for HOST_COHERENT memory, so always flush/invalidate there.
++                let is_coherent = !cfg!(target_env = "ohos")
++                    && allocation
++                        .memory_properties()
++                        .contains(vk::MemoryPropertyFlags::HOST_COHERENT);
+                 Ok(crate::BufferMapping {
+                     ptr: unsafe {
+                         allocation
+@@ -1379,7 +1382,13 @@ impl crate::Device for super::Device {
+         let mut binding_flag_info =
+             vk::DescriptorSetLayoutBindingFlagsCreateInfo::default().binding_flags(&binding_flags);
+ 
+-        let vk_info = vk_info.push_next(&mut binding_flag_info);
++        // Only chain the binding flags when some are set: the struct is optional, and the
++        // OpenHarmony emulator's Vulkan translation mis-decodes it.
++        let vk_info = if binding_flags.iter().any(|f| !f.is_empty()) {
++            vk_info.push_next(&mut binding_flag_info)
++        } else {
++            vk_info
++        };
+ 
+         let raw = unsafe {
+             self.shared
+diff --git a/a/src/vulkan/instance.rs b/b/src/vulkan/instance.rs
+index 8951115..de1ae69 100644
+--- a/a/src/vulkan/instance.rs
++++ b/b/src/vulkan/instance.rs
+@@ -255,6 +255,10 @@ impl super::Instance {
+             // VK_KHR_android_surface
+             extensions.push(khr::android_surface::NAME);
+         }
++        if cfg!(target_env = "ohos") {
++            // VK_OHOS_surface
++            extensions.push(OHOS_SURFACE_NAME);
++        }
+         if cfg!(target_os = "windows") {
+             // VK_KHR_win32_surface
+             extensions.push(khr::win32_surface::NAME);
+@@ -488,6 +492,46 @@ impl super::Instance {
+         Ok(self.create_surface_from_vk_surface_khr(surface))
+     }
+ 
++    fn create_surface_ohos(
++        &self,
++        window: *mut c_void,
++    ) -> Result<super::Surface, crate::InstanceError> {
++        if !self.shared.extensions.contains(&OHOS_SURFACE_NAME) {
++            return Err(crate::InstanceError::new(String::from(
++                "Vulkan driver does not support VK_OHOS_surface",
++            )));
++        }
++        // ash has no bindings for VK_OHOS_surface yet; load vkCreateSurfaceOHOS by hand.
++        let create: PfnCreateSurfaceOhos = unsafe {
++            let f = self.shared.entry.get_instance_proc_addr(
++                self.shared.raw.handle(),
++                c"vkCreateSurfaceOHOS".as_ptr(),
++            );
++            match f {
++                Some(f) => core::mem::transmute::<vk::PFN_vkVoidFunction, PfnCreateSurfaceOhos>(Some(f)),
++                None => {
++                    return Err(crate::InstanceError::new(String::from(
++                        "vkCreateSurfaceOHOS is not available",
++                    )))
++                }
++            }
++        };
++        let info = SurfaceCreateInfoOhos {
++            s_type: vk::StructureType::from_raw(1000685000), // VK_STRUCTURE_TYPE_SURFACE_CREATE_INFO_OHOS
++            p_next: core::ptr::null(),
++            flags: 0,
++            window,
++        };
++        let mut surface = vk::SurfaceKHR::null();
++        let result = unsafe { create(self.shared.raw.handle(), &info, core::ptr::null(), &mut surface) };
++        if result != vk::Result::SUCCESS {
++            return Err(crate::InstanceError::new(format!(
++                "vkCreateSurfaceOHOS failed: {result:?}"
++            )));
++        }
++        Ok(self.create_surface_from_vk_surface_khr(surface))
++    }
++
+     fn create_surface_from_hwnd(
+         &self,
+         hinstance: vk::HINSTANCE,
+@@ -571,7 +615,15 @@ impl super::Instance {
+ 
+         let entry = unsafe {
+             profiling::scope!("Load vk library");
+-            ash::Entry::load()
++            // OpenHarmony ships the loader as plain libvulkan.so (ash looks for libvulkan.so.1 on Linux).
++            #[cfg(target_env = "ohos")]
++            {
++                ash::Entry::load_from("libvulkan.so")
++            }
++            #[cfg(not(target_env = "ohos"))]
++            {
++                ash::Entry::load()
++            }
+         }
+         .map_err(|err| {
+             crate::InstanceError::with_source(String::from("missing Vulkan entry points"), err)
+@@ -895,6 +947,7 @@ impl crate::Instance for super::Instance {
+             (Rwh::AndroidNdk(handle), _) => {
+                 self.create_surface_android(handle.a_native_window.as_ptr())
+             }
++            (Rwh::OhosNdk(handle), _) => self.create_surface_ohos(handle.native_window.as_ptr()),
+             (Rwh::Win32(handle), _) => {
+                 let hinstance = handle.hinstance.ok_or_else(|| {
+                     crate::InstanceError::new(String::from(
+@@ -1042,3 +1095,20 @@ impl crate::Surface for super::Surface {
+         };
+     }
+ }
++
++const OHOS_SURFACE_NAME: &CStr = c"VK_OHOS_surface";
++
++#[repr(C)]
++struct SurfaceCreateInfoOhos {
++    s_type: vk::StructureType,
++    p_next: *const c_void,
++    flags: vk::Flags,
++    window: *mut c_void,
++}
++
++type PfnCreateSurfaceOhos = unsafe extern "system" fn(
++    instance: vk::Instance,
++    p_create_info: *const SurfaceCreateInfoOhos,
++    p_allocator: *const vk::AllocationCallbacks<'static>,
++    p_surface: *mut vk::SurfaceKHR,
++) -> vk::Result;
+diff --git a/a/src/vulkan/swapchain/native.rs b/b/src/vulkan/swapchain/native.rs
+index 66f08db..42e015a 100644
+--- a/a/src/vulkan/swapchain/native.rs
++++ b/b/src/vulkan/swapchain/native.rs
+@@ -160,10 +160,16 @@ impl Surface for NativeSurface {
+         profiling::scope!("Device::create_swapchain");
+         let functor = khr::swapchain::Device::new(&self.instance.raw, &device.shared.raw);
+ 
+-        let old_swapchain = match provided_old_swapchain {
++        let mut old_swapchain = match provided_old_swapchain {
+             Some(osc) => osc.as_any().downcast_ref::<NativeSwapchain>().unwrap().raw,
+             None => vk::SwapchainKHR::null(),
+         };
++        // The OpenHarmony emulator's Vulkan translation fails a swapchain recreated through
++        // `oldSwapchain` with VK_ERROR_NATIVE_WINDOW_IN_USE_KHR; retire the old one first.
++        if cfg!(target_env = "ohos") && old_swapchain != vk::SwapchainKHR::null() {
++            unsafe { functor.destroy_swapchain(old_swapchain, None) };
++            old_swapchain = vk::SwapchainKHR::null();
++        }
+ 
+         let color_space = if config.format == wgt::TextureFormat::Rgba16Float {
+             // Enable wide color gamut mode

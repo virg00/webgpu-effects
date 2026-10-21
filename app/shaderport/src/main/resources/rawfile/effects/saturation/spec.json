@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "id": "saturation",
+  "name": "Saturation",
+  "category": "Adjustments",
+  "layer": "main",
+  "cost": "very-low",
+  "role": "warp-or-pointwise-filter",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [
+    "input"
+  ],
+  "base": {
+    "id": "plasma",
+    "node": "base"
+  },
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": "base"
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "intensity": {
+      "default": 1,
+      "description": "The intensity of the saturation effect (1 being no change)",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 3,
+        "step": 0.1,
+        "label": "Intensity",
+        "group": "Adjustments"
+      }
+    }
+  },
+  "defaults": {
+    "intensity": 1
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.intensity": 1,
+    "n_base.density": 2,
+    "n_base.speed": 2,
+    "n_base.intensity": 1.5,
+    "n_base.warp": 0.4,
+    "n_base.contrast": 1,
+    "n_base.balance": 50,
+    "n_base.colorA": [
+      0.13488464057445526,
+      0.014209296554327011,
+      0.47227197885513306,
+      1
+    ],
+    "n_base.colorB": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "n_base.colorsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_base.positionsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_base.convertedColorsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_base.stopCount": 0,
+    "n_base.colorSpace": 0
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/Saturation/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "schema": 1,
+  "id": "spiral",
+  "name": "Spiral",
+  "category": "Textures",
+  "layer": "main",
+  "cost": "low",
+  "role": "generator",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [],
+  "base": null,
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": null
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "colorA": {
+      "default": "#000000",
+      "description": "Background color",
+      "ui": {
+        "type": "color",
+        "label": "Color A",
+        "group": "Colors"
+      }
+    },
+    "colorB": {
+      "default": "#ffffff",
+      "description": "Spiral stroke color",
+      "ui": {
+        "type": "color",
+        "label": "Color B",
+        "group": "Colors"
+      }
+    },
+    "strokeWidth": {
+      "default": 0.5,
+      "description": "Thickness of spiral stroke",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 2,
+        "step": 0.1,
+        "label": "Stroke Width",
+        "group": "Effect"
+      }
+    },
+    "strokeFalloff": {
+      "default": 0,
+      "description": "Stroke losing width further from center",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "label": "Stroke Falloff",
+        "group": "Effect"
+      }
+    },
+    "softness": {
+      "default": 0,
+      "description": "Color transition sharpness (0 = hard edge, 1 = smooth fade)",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "label": "Softness",
+        "group": "Effect"
+      }
+    },
+    "speed": {
+      "default": 1,
+      "description": "Animation speed (negative values reverse direction)",
+      "ui": {
+        "type": "range",
+        "min": -3,
+        "max": 3,
+        "step": 0.1,
+        "label": "Speed",
+        "group": "Animation"
+      }
+    },
+    "center": {
+      "default": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "description": "The center point of the spiral",
+      "ui": {
+        "type": "position",
+        "label": "Center",
+        "group": "Position"
+      }
+    },
+    "scale": {
+      "default": 1,
+      "description": "Scale factor for spiral bands (higher = more bands, lower = fewer bands)",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0.1,
+        "max": 5,
+        "step": 0.1,
+        "label": "Scale",
+        "group": "Effect"
+      }
+    },
+    "colorSpace": {
+      "default": "linear",
+      "description": "Color space for color interpolation",
+      "ui": {
+        "type": "select",
+        "options": [
+          {
+            "label": "Linear RGB",
+            "value": "linear"
+          },
+          {
+            "label": "OKLCh",
+            "value": "oklch"
+          },
+          {
+            "label": "OKLAB",
+            "value": "oklab"
+          },
+          {
+            "label": "HSL",
+            "value": "hsl"
+          },
+          {
+            "label": "HSV",
+            "value": "hsv"
+          },
+          {
+            "label": "LCH",
+            "value": "lch"
+          }
+        ],
+        "label": "Color Space",
+        "group": "Colors"
+      }
+    }
+  },
+  "defaults": {
+    "colorA": "#000000",
+    "colorB": "#ffffff",
+    "strokeWidth": 0.5,
+    "strokeFalloff": 0,
+    "softness": 0,
+    "speed": 1,
+    "center": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "scale": 1,
+    "colorSpace": "linear"
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.colorA": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "n_n.colorB": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_n.strokeWidth": 0.5,
+    "n_n.strokeFalloff": 0,
+    "n_n.softness": 0,
+    "n_n.speed": 1,
+    "n_n.center": [
+      0.5,
+      0.5,
+      0,
+      0
+    ],
+    "n_n.scale": 1,
+    "n_n.colorSpace": 0
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/Spiral/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

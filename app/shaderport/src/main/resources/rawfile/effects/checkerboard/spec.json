@@ -1,0 +1,166 @@
+{
+  "schema": 1,
+  "id": "checkerboard",
+  "name": "Checkerboard",
+  "category": "Textures",
+  "layer": "background",
+  "cost": "very-low",
+  "role": "generator",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [],
+  "base": null,
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": null
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "colorA": {
+      "default": "#cccccc",
+      "description": "First color of the checkerboard pattern",
+      "ui": {
+        "type": "color",
+        "label": "Color A",
+        "group": "Colors"
+      }
+    },
+    "colorB": {
+      "default": "#999999",
+      "description": "Second color of the checkerboard pattern",
+      "ui": {
+        "type": "color",
+        "label": "Color B",
+        "group": "Colors"
+      }
+    },
+    "cells": {
+      "default": 8,
+      "description": "Number of cells along the canvas height (creates square cells). Switch the unit to px in the editor to set an absolute cell size instead.",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "label": "Cells",
+        "group": "Effect",
+        "dimensional": "count-canvas-height"
+      }
+    },
+    "softness": {
+      "default": 0,
+      "description": "Smoothness of the transition between colors (0 = hard edges, 1 = very soft)",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "label": "Softness",
+        "group": "Effect"
+      }
+    },
+    "colorSpace": {
+      "default": "linear",
+      "description": "Color space for color interpolation",
+      "ui": {
+        "type": "select",
+        "options": [
+          {
+            "label": "Linear RGB",
+            "value": "linear"
+          },
+          {
+            "label": "OKLCh",
+            "value": "oklch"
+          },
+          {
+            "label": "OKLAB",
+            "value": "oklab"
+          },
+          {
+            "label": "HSL",
+            "value": "hsl"
+          },
+          {
+            "label": "HSV",
+            "value": "hsv"
+          },
+          {
+            "label": "LCH",
+            "value": "lch"
+          }
+        ],
+        "label": "Color Space",
+        "group": "Colors"
+      }
+    }
+  },
+  "defaults": {
+    "colorA": "#cccccc",
+    "colorB": "#999999",
+    "cells": 8,
+    "softness": 0,
+    "colorSpace": "linear"
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.colorA": [
+      0.6038273572921753,
+      0.6038273572921753,
+      0.6038273572921753,
+      1
+    ],
+    "n_n.colorB": [
+      0.31854677200317383,
+      0.31854677200317383,
+      0.31854677200317383,
+      1
+    ],
+    "n_n.cells": 8,
+    "n_n.softness": 0,
+    "n_n.colorSpace": 0
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/Checkerboard/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

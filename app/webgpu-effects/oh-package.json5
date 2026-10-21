@@ -1,0 +1,16 @@
+{
+  "name": "@virg00/webgpu-effects",
+  "version": "1.0.0",
+  "description": "199 GPU effects (gradients, noise, glass, metal, light, fluids, particles, distortions, transitions, blurs, cursor effects) as one ArkUI component, running the upstream shaders.com engine on a bundled WebGPU (wgpu / Vulkan).",
+  "main": "Index.ets",
+  "author": "virg00",
+  "license": "MIT",
+  "homepage": "https://github.com/virg00/webgpu-effects",
+  "repository": "https://github.com/virg00/webgpu-effects",
+  "bugs": "https://github.com/virg00/webgpu-effects/issues",
+  "keywords": ["webgpu", "wgsl", "vulkan", "shader", "gpu", "effects", "gradient", "animation", "arkui", "harmonyos"],
+  "tags": ["graphics", "animation", "ui"],
+  "dependencies": {
+    "libwebgpu_effects.so": "file:./src/main/cpp/types/libwebgpu_effects"
+  }
+}

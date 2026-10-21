@@ -1,0 +1,257 @@
+{
+  "schema": 1,
+  "id": "cursor-ripples",
+  "name": "CursorRipples",
+  "category": "Interactive",
+  "layer": "main",
+  "cost": "medium",
+  "role": "filter",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [
+    "input"
+  ],
+  "base": {
+    "id": "plasma",
+    "node": "base"
+  },
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": "base"
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "rtt_rtt_0",
+      "file": "passes/rtt_rtt_0.glsl",
+      "entry": "rtt_rtt_0",
+      "samplers": []
+    },
+    {
+      "index": 1,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": [
+        "_group_1_binding_0_fs"
+      ]
+    }
+  ],
+  "props": {
+    "intensity": {
+      "default": 10,
+      "description": "Strength of the ripple distortion",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 20,
+        "step": 0.1,
+        "label": "Intensity",
+        "group": "Effect"
+      }
+    },
+    "decay": {
+      "default": 10,
+      "description": "How quickly ripples fade (higher = faster)",
+      "ui": {
+        "type": "range",
+        "min": 0,
+        "max": 20,
+        "step": 0.1,
+        "label": "Decay",
+        "group": "Effect"
+      }
+    },
+    "radius": {
+      "default": 0.5,
+      "description": "Radius of cursor influence",
+      "ui": {
+        "type": "range",
+        "min": 0.1,
+        "max": 1,
+        "step": 0.1,
+        "label": "Radius",
+        "group": "Effect"
+      }
+    },
+    "chromaticSplit": {
+      "default": 1,
+      "description": "RGB channel separation along ripple edges",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 3,
+        "step": 0.1,
+        "label": "Chromatic Split",
+        "group": "Effect"
+      }
+    },
+    "edges": {
+      "default": "stretch",
+      "description": "How to handle edges when distortion pushes content out of bounds",
+      "ui": {
+        "type": "select",
+        "options": [
+          {
+            "label": "Stretch",
+            "value": "stretch"
+          },
+          {
+            "label": "Transparent",
+            "value": "transparent"
+          },
+          {
+            "label": "Mirror",
+            "value": "mirror"
+          },
+          {
+            "label": "Wrap",
+            "value": "wrap"
+          }
+        ],
+        "label": "Edges",
+        "group": "Effect"
+      }
+    }
+  },
+  "defaults": {
+    "intensity": 10,
+    "decay": 10,
+    "radius": 0.5,
+    "chromaticSplit": 1,
+    "edges": "stretch"
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.intensity": 10,
+    "n_n.decay": 10,
+    "n_n.radius": 0.5,
+    "n_n.chromaticSplit": 1,
+    "n_n.edges": 0,
+    "n_base.density": 2,
+    "n_base.speed": 2,
+    "n_base.intensity": 1.5,
+    "n_base.warp": 0.4,
+    "n_base.contrast": 1,
+    "n_base.balance": 50,
+    "n_base.colorA": [
+      0.13488464057445526,
+      0.014209296554327011,
+      0.47227197885513306,
+      1
+    ],
+    "n_base.colorB": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "n_base.colorsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_base.positionsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_base.convertedColorsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_base.stopCount": 0,
+    "n_base.colorSpace": 0
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/CursorRipples/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

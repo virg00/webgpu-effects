@@ -1,0 +1,14 @@
+build/
+app/**/build/
+app/**/.cxx/
+app/**/oh_modules/
+app/.hvigor/
+app/.idea/
+app/local.properties
+native/wgpu-native/
+native/wgpu-native/target/
+*.hap
+app/signing.local.json
+app/build-profile.json5.orig
+native/wgpu-hal/
+app/webgpu-effects/src/main/cpp/third_party/wgpu/lib/x86_64/

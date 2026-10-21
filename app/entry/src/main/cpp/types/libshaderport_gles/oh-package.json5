@@ -1,0 +1,1 @@
+{ "name": "libshaderport_gles.so", "types": "./index.d.ts", "version": "0.1.0", "description": "shaderport GLES 3.0 reference renderer" }

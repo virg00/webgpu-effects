@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "id": "solid-color",
+  "name": "SolidColor",
+  "category": "Textures",
+  "layer": "background",
+  "cost": "very-low",
+  "role": "generator",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [],
+  "base": null,
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": null
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "color": {
+      "default": "#5b18ca",
+      "description": "The solid color to display",
+      "ui": {
+        "type": "color",
+        "label": "Color",
+        "group": "Colors"
+      }
+    }
+  },
+  "defaults": {
+    "color": "#5b18ca"
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.color": [
+      0.08766472339630127,
+      0.012303520925343037,
+      0.5402186512947083,
+      1
+    ]
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/SolidColor/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

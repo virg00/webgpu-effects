@@ -1,0 +1,1 @@
+{ "name": "libwebgpu_effects.so", "types": "./index.d.ts", "version": "1.0.0", "description": "WebGPU (wgpu-native/Vulkan) bindings for the Ark runtime" }

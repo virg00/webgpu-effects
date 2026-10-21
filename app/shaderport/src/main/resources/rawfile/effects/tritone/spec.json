@@ -1,0 +1,259 @@
+{
+  "schema": 1,
+  "id": "tritone",
+  "name": "Tritone",
+  "category": "Adjustments",
+  "layer": "main",
+  "cost": "very-low",
+  "role": "warp-or-pointwise-filter",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [
+    "input"
+  ],
+  "base": {
+    "id": "plasma",
+    "node": "base"
+  },
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": "base"
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "colorA": {
+      "default": "#ce1bea",
+      "description": "First color (used for shadows/darkest areas)",
+      "ui": {
+        "type": "color",
+        "label": "Color A (Shadows)",
+        "group": "Colors"
+      }
+    },
+    "colorB": {
+      "default": "#2fff00",
+      "description": "Second color (used for midtones)",
+      "ui": {
+        "type": "color",
+        "label": "Color B (Midtones)",
+        "group": "Colors"
+      }
+    },
+    "colorC": {
+      "default": "#ffff00",
+      "description": "Third color (used for highlights/brightest areas)",
+      "ui": {
+        "type": "color",
+        "label": "Color C (Highlights)",
+        "group": "Colors"
+      }
+    },
+    "blendMid": {
+      "default": 0.5,
+      "description": "Midpoint position between the three colors",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "label": "Midpoint",
+        "group": "Effect"
+      }
+    },
+    "colorSpace": {
+      "default": "linear",
+      "description": "Color space for color interpolation",
+      "ui": {
+        "type": "select",
+        "options": [
+          {
+            "label": "Linear RGB",
+            "value": "linear"
+          },
+          {
+            "label": "OKLCh",
+            "value": "oklch"
+          },
+          {
+            "label": "OKLAB",
+            "value": "oklab"
+          },
+          {
+            "label": "HSL",
+            "value": "hsl"
+          },
+          {
+            "label": "HSV",
+            "value": "hsv"
+          },
+          {
+            "label": "LCH",
+            "value": "lch"
+          }
+        ],
+        "label": "Color Space",
+        "group": "Colors"
+      }
+    }
+  },
+  "defaults": {
+    "colorA": "#ce1bea",
+    "colorB": "#2fff00",
+    "colorC": "#ffff00",
+    "blendMid": 0.5,
+    "colorSpace": "linear"
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.colorA": [
+      0.5095747709274292,
+      0.031083960086107254,
+      0.7604998350143433,
+      1
+    ],
+    "n_n.colorB": [
+      0.20091736316680908,
+      0.9677493572235107,
+      0.07288303226232529,
+      1
+    ],
+    "n_n.colorC": [
+      1,
+      1,
+      0.08948007225990295,
+      1
+    ],
+    "n_n.blendMid": 0.5,
+    "n_n.colorSpace": 0,
+    "n_base.density": 2,
+    "n_base.speed": 2,
+    "n_base.intensity": 1.5,
+    "n_base.warp": 0.4,
+    "n_base.contrast": 1,
+    "n_base.balance": 50,
+    "n_base.colorA": [
+      0.13488464057445526,
+      0.014209296554327011,
+      0.47227197885513306,
+      1
+    ],
+    "n_base.colorB": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "n_base.colorsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_base.positionsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_base.convertedColorsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_base.stopCount": 0,
+    "n_base.colorSpace": 0
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/Tritone/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

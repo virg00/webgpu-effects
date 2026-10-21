@@ -1,0 +1,212 @@
+{
+  "schema": 1,
+  "id": "marble",
+  "name": "Marble",
+  "category": "Textures",
+  "layer": "background",
+  "cost": "low",
+  "role": "generator",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [],
+  "base": null,
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": null
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "colorA": {
+      "default": "#ffffff",
+      "description": "Base background color of the marble",
+      "ui": {
+        "type": "color",
+        "label": "Base",
+        "group": "Colors"
+      }
+    },
+    "colorB": {
+      "default": "#3a2d54",
+      "description": "Secondary marble tone",
+      "ui": {
+        "type": "color",
+        "label": "Tone",
+        "group": "Colors"
+      }
+    },
+    "colorC": {
+      "default": "#0f0f0f",
+      "description": "Deepest marble color",
+      "ui": {
+        "type": "color",
+        "label": "Depth",
+        "group": "Colors"
+      }
+    },
+    "scale": {
+      "default": 2,
+      "description": "Scale and density of the marble vein pattern",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0.1,
+        "max": 10,
+        "step": 0.1,
+        "label": "Scale",
+        "group": "Effect"
+      }
+    },
+    "turbulence": {
+      "default": 10,
+      "description": "Amount of noise-driven distortion applied to the veins",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 50,
+        "step": 0.5,
+        "label": "Turbulence",
+        "group": "Effect"
+      }
+    },
+    "speed": {
+      "default": 0.05,
+      "description": "Animation speed",
+      "ui": {
+        "type": "range",
+        "min": 0,
+        "max": 0.25,
+        "step": 0.005,
+        "label": "Speed",
+        "group": "Animation"
+      }
+    },
+    "seed": {
+      "default": 0,
+      "description": "Random seed for pattern variation",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "label": "Seed",
+        "group": "Effect"
+      }
+    },
+    "colorSpace": {
+      "default": "linear",
+      "description": "Color space for color interpolation",
+      "ui": {
+        "type": "select",
+        "options": [
+          {
+            "label": "Linear RGB",
+            "value": "linear"
+          },
+          {
+            "label": "OKLCh",
+            "value": "oklch"
+          },
+          {
+            "label": "OKLAB",
+            "value": "oklab"
+          },
+          {
+            "label": "HSL",
+            "value": "hsl"
+          },
+          {
+            "label": "HSV",
+            "value": "hsv"
+          },
+          {
+            "label": "LCH",
+            "value": "lch"
+          }
+        ],
+        "label": "Color Space",
+        "group": "Colors"
+      }
+    }
+  },
+  "defaults": {
+    "colorA": "#ffffff",
+    "colorB": "#3a2d54",
+    "colorC": "#0f0f0f",
+    "scale": 2,
+    "turbulence": 10,
+    "speed": 0.05,
+    "seed": 0,
+    "colorSpace": "linear"
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.colorA": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_n.colorB": [
+      0.039458341896533966,
+      0.026774659752845764,
+      0.08334526419639587,
+      1
+    ],
+    "n_n.colorC": [
+      0.004776953253895044,
+      0.004776953253895044,
+      0.004776953253895044,
+      1
+    ],
+    "n_n.scale": 2,
+    "n_n.turbulence": 10,
+    "n_n.speed": 0.05,
+    "n_n.seed": 0,
+    "n_n.colorSpace": 0
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/Marble/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

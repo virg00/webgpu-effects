@@ -1,0 +1,527 @@
+{
+  "schema": 1,
+  "upstream": {
+    "repository": "shader-effects-inc/shaders",
+    "version": "v4.0.4"
+  },
+  "effects": [
+    {
+      "id": "solid-color",
+      "name": "SolidColor",
+      "category": "Textures",
+      "layer": "background",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/solid-color"
+    },
+    {
+      "id": "linear-gradient",
+      "name": "LinearGradient",
+      "category": "Textures",
+      "layer": "background",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/linear-gradient"
+    },
+    {
+      "id": "radial-gradient",
+      "name": "RadialGradient",
+      "category": "Textures",
+      "layer": "background",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/radial-gradient"
+    },
+    {
+      "id": "plasma",
+      "name": "Plasma",
+      "category": "Textures",
+      "layer": "main",
+      "cost": "medium",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/plasma"
+    },
+    {
+      "id": "twirl",
+      "name": "Twirl",
+      "category": "Distortions",
+      "layer": "main",
+      "cost": "medium",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/twirl"
+    },
+    {
+      "id": "blur",
+      "name": "Blur",
+      "category": "Blurs",
+      "layer": "main",
+      "cost": "medium",
+      "passes": 2,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/blur"
+    },
+    {
+      "id": "marble",
+      "name": "Marble",
+      "category": "Textures",
+      "layer": "background",
+      "cost": "low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/marble"
+    },
+    {
+      "id": "perlin-noise",
+      "name": "PerlinNoise",
+      "category": "Textures",
+      "layer": "background",
+      "cost": "low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/perlin-noise"
+    },
+    {
+      "id": "simplex-noise",
+      "name": "SimplexNoise",
+      "category": "Textures",
+      "layer": "background",
+      "cost": "low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/simplex-noise"
+    },
+    {
+      "id": "block-noise",
+      "name": "BlockNoise",
+      "category": "Textures",
+      "layer": "background",
+      "cost": "low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/block-noise"
+    },
+    {
+      "id": "circle",
+      "name": "Circle",
+      "category": "Shapes",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/circle"
+    },
+    {
+      "id": "ripples",
+      "name": "Ripples",
+      "category": "Textures",
+      "layer": "main",
+      "cost": "low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/ripples"
+    },
+    {
+      "id": "mesh-gradient",
+      "name": "MeshGradient",
+      "category": "Textures",
+      "layer": "background",
+      "cost": "high",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/mesh-gradient"
+    },
+    {
+      "id": "flowing-gradient",
+      "name": "FlowingGradient",
+      "category": "Textures",
+      "layer": "background",
+      "cost": "medium",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/flowing-gradient"
+    },
+    {
+      "id": "aurora",
+      "name": "Aurora",
+      "category": "Textures",
+      "layer": "background",
+      "cost": "medium",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/aurora"
+    },
+    {
+      "id": "vignette",
+      "name": "Vignette",
+      "category": "Stylize",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/vignette"
+    },
+    {
+      "id": "glow",
+      "name": "Glow",
+      "category": "Stylize",
+      "layer": "main",
+      "cost": "medium",
+      "passes": 2,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/glow"
+    },
+    {
+      "id": "cursor-ripples",
+      "name": "CursorRipples",
+      "category": "Interactive",
+      "layer": "main",
+      "cost": "medium",
+      "passes": 2,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/cursor-ripples"
+    },
+    {
+      "id": "rounded-rect",
+      "name": "RoundedRect",
+      "category": "Shapes",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/rounded-rect"
+    },
+    {
+      "id": "polygon",
+      "name": "Polygon",
+      "category": "Shapes",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/polygon"
+    },
+    {
+      "id": "ring",
+      "name": "Ring",
+      "category": "Shapes",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/ring"
+    },
+    {
+      "id": "star",
+      "name": "Star",
+      "category": "Shapes",
+      "layer": "main",
+      "cost": "low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/star"
+    },
+    {
+      "id": "brightness-contrast",
+      "name": "BrightnessContrast",
+      "category": "Adjustments",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/brightness-contrast"
+    },
+    {
+      "id": "duotone",
+      "name": "Duotone",
+      "category": "Adjustments",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/duotone"
+    },
+    {
+      "id": "hue-shift",
+      "name": "HueShift",
+      "category": "Adjustments",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/hue-shift"
+    },
+    {
+      "id": "ellipse",
+      "name": "Ellipse",
+      "category": "Shapes",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/ellipse"
+    },
+    {
+      "id": "heart",
+      "name": "Heart",
+      "category": "Shapes",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/heart"
+    },
+    {
+      "id": "teardrop",
+      "name": "Teardrop",
+      "category": "Shapes",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/teardrop"
+    },
+    {
+      "id": "arc",
+      "name": "Arc",
+      "category": "Shapes",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/arc"
+    },
+    {
+      "id": "cross",
+      "name": "Cross",
+      "category": "Shapes",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/cross"
+    },
+    {
+      "id": "exposure",
+      "name": "Exposure",
+      "category": "Adjustments",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/exposure"
+    },
+    {
+      "id": "grayscale",
+      "name": "Grayscale",
+      "category": "Adjustments",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/grayscale"
+    },
+    {
+      "id": "invert",
+      "name": "Invert",
+      "category": "Adjustments",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/invert"
+    },
+    {
+      "id": "posterize",
+      "name": "Posterize",
+      "category": "Adjustments",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/posterize"
+    },
+    {
+      "id": "saturation",
+      "name": "Saturation",
+      "category": "Adjustments",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/saturation"
+    },
+    {
+      "id": "tint",
+      "name": "Tint",
+      "category": "Adjustments",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/tint"
+    },
+    {
+      "id": "tritone",
+      "name": "Tritone",
+      "category": "Adjustments",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/tritone"
+    },
+    {
+      "id": "flip",
+      "name": "Flip",
+      "category": "Distortions",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/flip"
+    },
+    {
+      "id": "mirror",
+      "name": "Mirror",
+      "category": "Distortions",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/mirror"
+    },
+    {
+      "id": "polar-coordinates",
+      "name": "PolarCoordinates",
+      "category": "Distortions",
+      "layer": "main",
+      "cost": "low",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/polar-coordinates"
+    },
+    {
+      "id": "rectangular-coordinates",
+      "name": "RectangularCoordinates",
+      "category": "Distortions",
+      "layer": "main",
+      "cost": "low",
+      "passes": 1,
+      "requires": [
+        "input"
+      ],
+      "path": "effects/rectangular-coordinates"
+    },
+    {
+      "id": "checkerboard",
+      "name": "Checkerboard",
+      "category": "Textures",
+      "layer": "background",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/checkerboard"
+    },
+    {
+      "id": "stripes",
+      "name": "Stripes",
+      "category": "Textures",
+      "layer": "background",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/stripes"
+    },
+    {
+      "id": "grid",
+      "name": "Grid",
+      "category": "Textures",
+      "layer": "background",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/grid"
+    },
+    {
+      "id": "dot-grid",
+      "name": "DotGrid",
+      "category": "Textures",
+      "layer": "background",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/dot-grid"
+    },
+    {
+      "id": "hex-grid",
+      "name": "HexGrid",
+      "category": "Textures",
+      "layer": "background",
+      "cost": "low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/hex-grid"
+    },
+    {
+      "id": "sine-wave",
+      "name": "SineWave",
+      "category": "Textures",
+      "layer": "main",
+      "cost": "very-low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/sine-wave"
+    },
+    {
+      "id": "spiral",
+      "name": "Spiral",
+      "category": "Textures",
+      "layer": "main",
+      "cost": "low",
+      "passes": 1,
+      "requires": [],
+      "path": "effects/spiral"
+    }
+  ]
+}

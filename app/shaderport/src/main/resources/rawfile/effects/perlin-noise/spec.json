@@ -1,0 +1,288 @@
+{
+  "schema": 1,
+  "id": "perlin-noise",
+  "name": "PerlinNoise",
+  "category": "Textures",
+  "layer": "background",
+  "cost": "low",
+  "role": "generator",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [],
+  "base": null,
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": null
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "colorA": {
+      "default": "#ffffff",
+      "description": "First color",
+      "ui": {
+        "type": "color",
+        "label": "Color A",
+        "group": "Colors"
+      }
+    },
+    "colorB": {
+      "default": "#000000",
+      "description": "Second color",
+      "ui": {
+        "type": "color",
+        "label": "Color B",
+        "group": "Colors"
+      }
+    },
+    "stops": {
+      "default": null,
+      "description": "Multi-stop gradient colors (overrides Color A / Color B when set)",
+      "ui": {
+        "type": "gradient-stops",
+        "label": "Colors",
+        "group": "Colors"
+      }
+    },
+    "colorSpace": {
+      "default": "linear",
+      "description": "Color space for color interpolation",
+      "ui": {
+        "type": "select",
+        "options": [
+          {
+            "label": "Linear RGB",
+            "value": "linear"
+          },
+          {
+            "label": "OKLCh",
+            "value": "oklch"
+          },
+          {
+            "label": "OKLAB",
+            "value": "oklab"
+          },
+          {
+            "label": "HSL",
+            "value": "hsl"
+          },
+          {
+            "label": "HSV",
+            "value": "hsv"
+          },
+          {
+            "label": "LCH",
+            "value": "lch"
+          }
+        ],
+        "label": "Color Space",
+        "group": "Colors"
+      }
+    },
+    "scale": {
+      "default": 2,
+      "description": "Pattern scale (higher = finer, more detailed patterns; each +1 roughly doubles the frequency)",
+      "ui": {
+        "type": "range",
+        "min": -2,
+        "max": 5,
+        "step": 0.1,
+        "label": "Scale",
+        "group": "Effect"
+      }
+    },
+    "contrast": {
+      "default": 0,
+      "description": "Pattern contrast (higher = sharper transitions)",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": -1,
+        "max": 5,
+        "step": 0.1,
+        "label": "Contrast",
+        "group": "Effect"
+      }
+    },
+    "balance": {
+      "default": 0,
+      "description": "Balance between colors (negative = more colorB, positive = more colorA)",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": -1,
+        "max": 1,
+        "step": 0.05,
+        "label": "Balance",
+        "group": "Effect"
+      }
+    },
+    "seed": {
+      "default": 0,
+      "description": "Random seed for pattern variation",
+      "ui": {
+        "type": "range",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "label": "Seed",
+        "group": "Effect"
+      }
+    },
+    "speed": {
+      "default": 1,
+      "description": "Animation speed",
+      "ui": {
+        "type": "range",
+        "min": 0,
+        "max": 5,
+        "step": 0.1,
+        "label": "Speed",
+        "group": "Animation"
+      }
+    }
+  },
+  "defaults": {
+    "colorA": "#ffffff",
+    "colorB": "#000000",
+    "stops": null,
+    "colorSpace": "linear",
+    "scale": 2,
+    "contrast": 0,
+    "balance": 0,
+    "seed": 0,
+    "speed": 1
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 8,
+      "over8Ratio": 0.15,
+      "bandMean": 8
+    }
+  },
+  "resolved": {
+    "n_n.colorA": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_n.colorB": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "n_n.colorsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_n.positionsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_n.convertedColorsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_n.stopCount": 0,
+    "n_n.colorSpace": 0,
+    "n_n.scale": 2,
+    "n_n.contrast": 0,
+    "n_n.balance": 0,
+    "n_n.seed": 0,
+    "n_n.speed": 1
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/PerlinNoise/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

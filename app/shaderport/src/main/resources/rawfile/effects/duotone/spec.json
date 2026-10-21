@@ -1,0 +1,243 @@
+{
+  "schema": 1,
+  "id": "duotone",
+  "name": "Duotone",
+  "category": "Adjustments",
+  "layer": "main",
+  "cost": "very-low",
+  "role": "warp-or-pointwise-filter",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [
+    "input"
+  ],
+  "base": {
+    "id": "plasma",
+    "node": "base"
+  },
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": "base"
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "colorA": {
+      "default": "#ff0000",
+      "description": "First color (used for darker areas)",
+      "ui": {
+        "type": "color",
+        "label": "Color A",
+        "group": "Colors"
+      }
+    },
+    "colorB": {
+      "default": "#023af4",
+      "description": "Second color (used for brighter areas)",
+      "ui": {
+        "type": "color",
+        "label": "Color B",
+        "group": "Colors"
+      }
+    },
+    "blend": {
+      "default": 0.5,
+      "description": "Blend point between the two colors",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "label": "Blend",
+        "group": "Effect"
+      }
+    },
+    "colorSpace": {
+      "default": "linear",
+      "description": "Color space for color interpolation",
+      "ui": {
+        "type": "select",
+        "options": [
+          {
+            "label": "Linear RGB",
+            "value": "linear"
+          },
+          {
+            "label": "OKLCh",
+            "value": "oklch"
+          },
+          {
+            "label": "OKLAB",
+            "value": "oklab"
+          },
+          {
+            "label": "HSL",
+            "value": "hsl"
+          },
+          {
+            "label": "HSV",
+            "value": "hsv"
+          },
+          {
+            "label": "LCH",
+            "value": "lch"
+          }
+        ],
+        "label": "Color Space",
+        "group": "Colors"
+      }
+    }
+  },
+  "defaults": {
+    "colorA": "#ff0000",
+    "colorB": "#023af4",
+    "blend": 0.5,
+    "colorSpace": "linear"
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.colorA": [
+      0.8224619626998901,
+      0.033194199204444885,
+      0.017082631587982178,
+      1
+    ],
+    "n_n.colorB": [
+      0.008011163212358952,
+      0.04092706739902496,
+      0.8267856240272522,
+      1
+    ],
+    "n_n.blend": 0.5,
+    "n_n.colorSpace": 0,
+    "n_base.density": 2,
+    "n_base.speed": 2,
+    "n_base.intensity": 1.5,
+    "n_base.warp": 0.4,
+    "n_base.contrast": 1,
+    "n_base.balance": 50,
+    "n_base.colorA": [
+      0.13488464057445526,
+      0.014209296554327011,
+      0.47227197885513306,
+      1
+    ],
+    "n_base.colorB": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "n_base.colorsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_base.positionsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_base.convertedColorsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_base.stopCount": 0,
+    "n_base.colorSpace": 0
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/Duotone/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

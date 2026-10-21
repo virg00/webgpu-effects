@@ -1,0 +1,302 @@
+{
+  "schema": 1,
+  "id": "radial-gradient",
+  "name": "RadialGradient",
+  "category": "Textures",
+  "layer": "background",
+  "cost": "very-low",
+  "role": "generator",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [],
+  "base": null,
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": null
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "colorA": {
+      "default": "#ff0000",
+      "description": "The starting color at the center of the gradient",
+      "ui": {
+        "type": "color",
+        "label": "Color A",
+        "group": "Colors"
+      }
+    },
+    "colorB": {
+      "default": "#0000ff",
+      "description": "The ending color at the edge of the gradient",
+      "ui": {
+        "type": "color",
+        "label": "Color B",
+        "group": "Colors"
+      }
+    },
+    "stops": {
+      "default": null,
+      "description": "Multi-stop gradient colors (overrides Color A / Color B when set)",
+      "ui": {
+        "type": "gradient-stops",
+        "label": "Colors",
+        "group": "Colors"
+      }
+    },
+    "center": {
+      "default": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "description": "The center point of the radial gradient",
+      "ui": {
+        "type": "position",
+        "label": "Center",
+        "group": "Position"
+      }
+    },
+    "radius": {
+      "default": 1,
+      "description": "The radius of the gradient (normalized, 0.0-1.0)",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 2,
+        "step": 0.1,
+        "label": "Radius",
+        "group": "Effect"
+      }
+    },
+    "repeat": {
+      "default": 1,
+      "description": "Number of times the gradient repeats. Values above 1 create concentric rings.",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 1,
+        "max": 20,
+        "step": 0.5,
+        "label": "Repeat",
+        "group": "Effect"
+      }
+    },
+    "aspect": {
+      "default": 1,
+      "description": "Stretches the gradient into an ellipse. Values below 1 compress vertically, above 1 compress horizontally.",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0.1,
+        "max": 4,
+        "step": 0.01,
+        "label": "Aspect",
+        "group": "Effect"
+      }
+    },
+    "skewAngle": {
+      "default": 0,
+      "description": "Rotates the ellipse axis in degrees. Only visible when Aspect is not 1.",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 360,
+        "step": 1,
+        "label": "Skew Angle",
+        "group": "Effect"
+      }
+    },
+    "colorSpace": {
+      "default": "linear",
+      "description": "Color space for color interpolation",
+      "ui": {
+        "type": "select",
+        "options": [
+          {
+            "label": "Linear RGB",
+            "value": "linear"
+          },
+          {
+            "label": "OKLCh",
+            "value": "oklch"
+          },
+          {
+            "label": "OKLAB",
+            "value": "oklab"
+          },
+          {
+            "label": "HSL",
+            "value": "hsl"
+          },
+          {
+            "label": "HSV",
+            "value": "hsv"
+          },
+          {
+            "label": "LCH",
+            "value": "lch"
+          }
+        ],
+        "label": "Color Space",
+        "group": "Colors"
+      }
+    }
+  },
+  "defaults": {
+    "colorA": "#ff0000",
+    "colorB": "#0000ff",
+    "stops": null,
+    "center": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "radius": 1,
+    "repeat": 1,
+    "aspect": 1,
+    "skewAngle": 0,
+    "colorSpace": "linear"
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.colorA": [
+      0.8224619626998901,
+      0.033194199204444885,
+      0.017082631587982178,
+      1
+    ],
+    "n_n.colorB": [
+      -5.551115123125783e-17,
+      3.469446951953614e-18,
+      0.9105199575424194,
+      1
+    ],
+    "n_n.colorsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_n.positionsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_n.convertedColorsArray": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_n.stopCount": 0,
+    "n_n.center": [
+      0.5,
+      0.5,
+      0,
+      0
+    ],
+    "n_n.radius": 1,
+    "n_n.repeat": 1,
+    "n_n.aspect": 1,
+    "n_n.skewAngle": 0,
+    "n_n.colorSpace": 0
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/RadialGradient/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

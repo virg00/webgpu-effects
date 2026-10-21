@@ -1,0 +1,278 @@
+{
+  "schema": 1,
+  "id": "rounded-rect",
+  "name": "RoundedRect",
+  "category": "Shapes",
+  "layer": "main",
+  "cost": "very-low",
+  "role": "generator",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [],
+  "base": null,
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": null
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "origin": {
+      "default": "center",
+      "description": "Reference edge the center position is measured from (center default). Lets you pin the shape relative to a corner or the canvas centre.",
+      "ui": {
+        "type": "origin",
+        "label": "Origin",
+        "group": "Position"
+      }
+    },
+    "color": {
+      "default": "#ffffff",
+      "description": "Fill color of the rectangle",
+      "ui": {
+        "type": "color",
+        "label": "Color",
+        "group": "Colors"
+      }
+    },
+    "center": {
+      "default": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "description": "Center position of the rectangle",
+      "ui": {
+        "type": "position",
+        "label": "Center",
+        "group": "Position",
+        "units": [
+          "%",
+          "px"
+        ]
+      }
+    },
+    "width": {
+      "default": 0.35,
+      "description": "Half-width of the rectangle",
+      "ui": {
+        "type": "range",
+        "min": 0.01,
+        "max": 1,
+        "step": 0.01,
+        "label": "Width",
+        "group": "Shape"
+      }
+    },
+    "height": {
+      "default": 0.25,
+      "description": "Half-height of the rectangle",
+      "ui": {
+        "type": "range",
+        "min": 0.01,
+        "max": 1,
+        "step": 0.01,
+        "label": "Height",
+        "group": "Shape"
+      }
+    },
+    "rounding": {
+      "default": 0.05,
+      "description": "Corner rounding radius — set to min(width, height) for a pill shape",
+      "ui": {
+        "type": "range",
+        "min": 0,
+        "max": 0.5,
+        "step": 0.01,
+        "label": "Rounding",
+        "group": "Shape",
+        "dimensional": "canvas-height"
+      }
+    },
+    "rotation": {
+      "default": 0,
+      "description": "Rotation in degrees",
+      "ui": {
+        "type": "range",
+        "min": 0,
+        "max": 360,
+        "step": 1,
+        "label": "Rotation",
+        "group": "Shape"
+      }
+    },
+    "softness": {
+      "default": 0,
+      "description": "Edge softness for antialiasing",
+      "ui": {
+        "type": "range",
+        "min": 0,
+        "max": 0.1,
+        "step": 0.001,
+        "label": "Softness",
+        "group": "Effect"
+      }
+    },
+    "strokeThickness": {
+      "default": 0,
+      "description": "Stroke thickness. Zero means no stroke.",
+      "ui": {
+        "type": "range",
+        "min": 0,
+        "max": 0.2,
+        "step": 0.005,
+        "label": "Stroke Thickness",
+        "group": "Stroke"
+      }
+    },
+    "strokeColor": {
+      "default": "#000000",
+      "description": "Color of the stroke outline",
+      "ui": {
+        "type": "color",
+        "label": "Stroke Color",
+        "group": "Colors"
+      }
+    },
+    "strokePosition": {
+      "default": "center",
+      "description": "Position of the stroke relative to the shape edge",
+      "ui": {
+        "type": "select",
+        "options": [
+          {
+            "label": "Outside",
+            "value": "outside"
+          },
+          {
+            "label": "Center",
+            "value": "center"
+          },
+          {
+            "label": "Inside",
+            "value": "inside"
+          }
+        ],
+        "label": "Stroke Position",
+        "group": "Stroke"
+      }
+    },
+    "colorSpace": {
+      "default": "linear",
+      "description": "Color space for blending fill and stroke colors",
+      "ui": {
+        "type": "select",
+        "options": [
+          {
+            "label": "Linear RGB",
+            "value": "linear"
+          },
+          {
+            "label": "OKLCh",
+            "value": "oklch"
+          },
+          {
+            "label": "OKLAB",
+            "value": "oklab"
+          },
+          {
+            "label": "HSL",
+            "value": "hsl"
+          },
+          {
+            "label": "HSV",
+            "value": "hsv"
+          },
+          {
+            "label": "LCH",
+            "value": "lch"
+          }
+        ],
+        "label": "Color Blending",
+        "group": "Colors"
+      }
+    }
+  },
+  "defaults": {
+    "origin": "center",
+    "color": "#ffffff",
+    "center": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "width": 0.35,
+    "height": 0.25,
+    "rounding": 0.05,
+    "rotation": 0,
+    "softness": 0,
+    "strokeThickness": 0,
+    "strokeColor": "#000000",
+    "strokePosition": "center",
+    "colorSpace": "linear"
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.origin": "center",
+    "n_n.color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_n.center": [
+      0.5,
+      0.5,
+      0,
+      0
+    ],
+    "n_n.width": 0.35,
+    "n_n.height": 0.25,
+    "n_n.rounding": 0.05,
+    "n_n.rotation": 0,
+    "n_n.softness": 0,
+    "n_n.strokeThickness": 0,
+    "n_n.strokeColor": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "n_n.strokePosition": 1,
+    "n_n.colorSpace": 0
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/RoundedRect/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

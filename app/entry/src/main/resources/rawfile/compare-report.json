@@ -1,0 +1,1385 @@
+{
+ "device": "LAP-AL10 三折叠 · HarmonyOS 7.0（API 26）· 同一个演示应用内测量",
+ "date": "2026-10-21",
+ "summary": [
+  "与上游原版（在 Mac 浏览器里用 WebGPU 直接跑 shaders 4.0.4 截图）对比 16 个静态效果：Claude 版平均差异 0.45%（16/16 个在 3% 以内），shaderport 平均差异 24.7%（7/16 个在 3% 以内）。shaderport 的形状类在默认参数下整屏填满，棋盘格格子比例不对。",
+  "手指在屏幕上滑动时 LTPO 屏会升到 120Hz：此时共同效果平均帧率 Claude 120 fps、shaderport 118 fps（48 个效果）。上游引擎原本把帧率封顶在 60，鸿蒙版已放开为跟随屏幕（可用 setMaxFrameRate(60) 省电）。",
+  "CPU 开销差距最大的效果：Glow（7.8 vs 1.6 ms）、Blur（7.1 vs 2.0 ms）、CursorRipples（6.3 vs 2.0 ms）。",
+  "静止时（屏幕 60Hz）共同效果 48 个两边都能出图；47 个两边都跑满约 60 fps。例外：MeshGradient 的 shaderport 只有 42 fps（另一侧 60 fps）。",
+  "每帧 CPU 耗时平均 Claude 5.2 ms，shaderport 1.6 ms：Claude 版每帧要在方舟 JS 里跑引擎（参数驱动、组合、编码命令），开销更大，但离 16.7 ms 的帧预算还很远。",
+  "进程内存（PSS）平均 Claude 198 MB，shaderport 135 MB（同一个演示应用里单独渲染一侧时测得；shaderport 一侧也包含了已加载但空闲的 Claude 引擎，所以它单独使用时会更省）。",
+  "页面到首帧平均 Claude 145 ms，shaderport 151 ms。",
+  "动画类效果（两边时钟不同步，无法逐像素比较）逐个人工核对：Claude 版 8/8 与原版一致；shaderport 的 Aurora 上下颠倒、SineWave 整屏纯白、Stripes 变成人字形、Spiral 方向不同、MeshGradient 布局不同。",
+  "结论：要效果全、能组合、能接图片/视频/摄像头、要和上游保持一致——选 Claude 版；只需要几十个基础背景/形状/调色效果、在意包体积或需要支持 HarmonyOS 5 / 模拟器——shaderport 更轻。"
+ ],
+ "rows": [
+  {
+   "topic": "技术路线",
+   "claude": "运行时直接跑上游 shaders 引擎（组合器、TypeGPU 生成 WGSL 全部原样），自带 WebGPU 实现：NAPI → wgpu-native → Vulkan，XComponent 上用 VK_OHOS_surface 出图。",
+   "port": "离线把每个效果的 WGSL 用 naga 转成 GLSL ES 3.00，连同参数规格打进 HAR；宿主自己写 EGL/GLES 渲染器按规格绘制。",
+   "verdict": "两边底层都用 naga：shaderport 离线转一次，Claude 版在运行时由 wgpu 编成 SPIR-V。"
+  },
+  {
+   "topic": "为什么一个是 WebGPU、一个是 GLES 3",
+   "claude": "上游库只支持 WebGPU（WGSL 着色器、计算着色器、TypeGPU 运行时生成着色器）。鸿蒙原生没有 WebGPU，Claude 版就在原生层实现了一套 WebGPU 接口，底下用 Vulkan 执行（Chrome 在安卓上也是这样实现 WebGPU 的），于是上游引擎的代码一行不改直接运行。",
+   "port": "把上游的着色器离线翻译成 OpenGL ES 3.0 的 GLSL，上游引擎在 CPU 侧做的事（组合、参数打包、动画时间、驱动）由宿主重新实现；GLES 3.0 没有计算着色器，相关效果只能放弃。",
+   "verdict": "Claude 版更符合原版：跑的就是原版引擎本身，实测与原版差异 0.45%，shaderport 24.7%；GLES 3 的好处是更老的系统和模拟器也能跑、体积更小。"
+  },
+  {
+   "topic": "效果覆盖",
+   "claude": "199 个（上游 200 个中只缺浏览器专属的 HTMLInCanvas），真机全部验证可运行。",
+   "port": "48 个：纹理 19、形状 10、调色 10、扭曲 5、风格化 2、模糊 1、交互 1。",
+   "verdict": "Claude 版覆盖约 4 倍；材质/光影、流体粒子、转场、模糊大类只有 Claude 版有。"
+  },
+  {
+   "topic": "计算着色器与跨帧模拟",
+   "claude": "支持（Boids、烟雾、反应扩散、流体粒子、磁力铁屑等全部可用）。",
+   "port": "不支持（GLES 3.0 无 compute；README 明确不收录 Smoke / ReactionDiffusion / Boids）。",
+   "verdict": "这是两条路线的本质差别之一，Claude 版完胜。"
+  },
+  {
+   "topic": "组合能力",
+   "claude": "完整上游语义：任意图层树、20 种混合模式、遮罩、包围盒、属性驱动（自动动画 / 跟手 / 读取其它图层）。",
+   "port": "每个效果是预先固定的组合（滤镜一律套在 Plasma 上），没有组合树接口。",
+   "verdict": "需要“图片 + 模糊 + 暗角”这类组合时只能用 Claude 版。"
+  },
+  {
+   "topic": "外部输入",
+   "claude": "图片（rawfile / https / 文件 / data URL）、视频（AVPlayer）、摄像头、文字（2D 画布栅格化）。",
+   "port": "无；滤镜类效果的输入固定为 Plasma。",
+   "verdict": "Claude 版可直接做真实业务场景（给照片、视频加效果）。"
+  },
+  {
+   "topic": "接入方式",
+   "claude": "一个 ArkUI 组件：ShaderView({ layers: [LinearGradient({...}), CursorTrail()] })，带类型的 200 个工厂函数，属性变更自动增量更新。",
+   "port": "HAR 只给 GLSL 源码 + 参数元数据；宿主要自己写 XComponent + EGL + UBO 反射 + RTT 渲染器（参考实现约 1000 行 C++）。",
+   "verdict": "Claude 版开箱即用；shaderport 更像“素材包 + 规范”。"
+  },
+  {
+   "topic": "包体积（arm64，release）",
+   "claude": "约 10.5 MB：引擎字节码 6.2 MB + wgpu/Vulkan 原生库 4.3 MB（另需系统 libc++）。",
+   "port": "运行时必需约 1 MB（GLSL 0.47 MB + 规格 0.3 MB + 渲染器 0.24 MB）；HAR 里另带 5.3 MB 参考图（可删）。",
+   "verdict": "shaderport 小一个数量级，是它最大的优势。"
+  },
+  {
+   "topic": "系统与设备要求",
+   "claude": "Vulkan 1.1；当前构建目标 API 24（HarmonyOS 6.1）。",
+   "port": "OpenGL ES 3.0；API 12+（HarmonyOS 5.0）。",
+   "verdict": "shaderport 覆盖的系统版本更老、更广。"
+  },
+  {
+   "topic": "模拟器",
+   "claude": "模拟器的 Vulkan 转译层（宿主 MoltenVK）对复杂着色器会转换失败并让模拟器崩溃，只有简单效果能跑；必须真机调试。",
+   "port": "GLES 在模拟器上可用，作者称 48/48 逐像素通过。",
+   "verdict": "开发调试体验 shaderport 更好。"
+  },
+  {
+   "topic": "与上游的一致性",
+   "claude": "同一份引擎代码，行为一致；仅对 bundle 做了一处语法级改写绕过方舟运行时缺陷，WGSL 只做两处等价改写。",
+   "port": "离线烘焙，部分语义有偏差：参考渲染器把 _animTime 直接写成全局时间，而上游按 deltaTime × speed 累加——所有 speed 参数不生效，默认 speed≠1 的效果（如 Plasma 默认 speed=2）动画节奏与上游不同；meshAnchors 按 1:1 比例烘焙。",
+   "verdict": "Claude 版天然与上游一致；shaderport 的动画速度可在分屏里直接看出差别。"
+  },
+  {
+   "topic": "跟进上游新版本",
+   "claude": "一条命令：scripts/sync-upstream.sh 拉取新 npm 版本、自动补丁并重新生成类型。",
+   "port": "需要重新导出 WGSL、逐效果转换、生成规格与参考图，新效果还要过 GLES 3.0 能力门禁。",
+   "verdict": "Claude 版维护成本低。"
+  },
+  {
+   "topic": "许可证",
+   "claude": "上游 MIT + wgpu MIT/Apache-2.0。",
+   "port": "Apache-2.0（效果来自上游 MIT）。",
+   "verdict": "都可商用。"
+  }
+ ],
+ "bench": [
+  {
+   "name": "Arc",
+   "animated": false,
+   "diffPct": 32.83,
+   "vsUpstream": {
+    "claude": 0.16,
+    "port": 38.25
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.012733694406881,
+    "firstFrameMs": 102,
+    "ok": true,
+    "pssKb": 195265,
+    "fpsTouch": 117.2
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.8359999999999999,
+    "firstFrameMs": 85,
+    "ok": true,
+    "pssKb": 135580,
+    "fpsTouch": 119.9
+   }
+  },
+  {
+   "name": "Aurora",
+   "animated": true,
+   "diffPct": 21.25,
+   "vsUpstream": null,
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.091340888135376,
+    "firstFrameMs": 172,
+    "ok": true,
+    "pssKb": 203660,
+    "fpsTouch": 117.1
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.569,
+    "firstFrameMs": 186,
+    "ok": true,
+    "pssKb": 138168,
+    "fpsTouch": 119.85
+   }
+  },
+  {
+   "name": "BlockNoise",
+   "animated": true,
+   "diffPct": 13.66,
+   "vsUpstream": null,
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 4.8665202950039115,
+    "firstFrameMs": 100,
+    "ok": true,
+    "pssKb": 196244,
+    "fpsTouch": 116.9
+   },
+   "port": {
+    "fps": 59.9,
+    "cpuMs": 1.7990000000000002,
+    "firstFrameMs": 87,
+    "ok": true,
+    "pssKb": 134487,
+    "fpsTouch": 119.82000000000001
+   }
+  },
+  {
+   "name": "Blur",
+   "animated": true,
+   "diffPct": 5.11,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 7.082056871631048,
+    "firstFrameMs": 306,
+    "ok": true,
+    "pssKb": 251783,
+    "fpsTouch": 119
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.9590000000000003,
+    "firstFrameMs": 206,
+    "ok": true,
+    "pssKb": 160349,
+    "fpsTouch": 119.91999999999999
+   }
+  },
+  {
+   "name": "BrightnessContrast",
+   "animated": true,
+   "diffPct": 4.89,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.157141198864119,
+    "firstFrameMs": 187,
+    "ok": true,
+    "pssKb": 204774,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.90999999999999,
+    "cpuMs": 1.4,
+    "firstFrameMs": 186,
+    "ok": true,
+    "pssKb": 138760,
+    "fpsTouch": 119.86000000000001
+   }
+  },
+  {
+   "name": "Checkerboard",
+   "animated": false,
+   "diffPct": 18.98,
+   "vsUpstream": {
+    "claude": 0.13,
+    "port": 19.84
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.060623392386922,
+    "firstFrameMs": 95,
+    "ok": true,
+    "pssKb": 193636,
+    "fpsTouch": 119.8
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.209,
+    "firstFrameMs": 86,
+    "ok": true,
+    "pssKb": 144662,
+    "fpsTouch": 119.88
+   }
+  },
+  {
+   "name": "Circle",
+   "animated": false,
+   "diffPct": 0.0,
+   "vsUpstream": {
+    "claude": 0.0,
+    "port": 0.0
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 4.828925530469787,
+    "firstFrameMs": 99,
+    "ok": true,
+    "pssKb": 193342,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.3729999999999998,
+    "firstFrameMs": 83,
+    "ok": true,
+    "pssKb": 134531,
+    "fpsTouch": 119.88000000000002
+   }
+  },
+  {
+   "name": "Cross",
+   "animated": false,
+   "diffPct": 52.23,
+   "vsUpstream": {
+    "claude": 1.03,
+    "port": 54.0
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 4.795965300871277,
+    "firstFrameMs": 103,
+    "ok": true,
+    "pssKb": 193245,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.90999999999999,
+    "cpuMs": 1.252,
+    "firstFrameMs": 91,
+    "ok": true,
+    "pssKb": 134974,
+    "fpsTouch": 119.92
+   }
+  },
+  {
+   "name": "CursorRipples",
+   "animated": true,
+   "diffPct": 5.23,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 6.314552643856877,
+    "firstFrameMs": 306,
+    "ok": true,
+    "pssKb": 254922,
+    "fpsTouch": 118.1
+   },
+   "port": {
+    "fps": 59.910000000000004,
+    "cpuMs": 2.0130000000000003,
+    "firstFrameMs": 207,
+    "ok": true,
+    "pssKb": 160391,
+    "fpsTouch": 119.88
+   }
+  },
+  {
+   "name": "DotGrid",
+   "animated": true,
+   "diffPct": 93.57,
+   "vsUpstream": null,
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 4.99211871849806,
+    "firstFrameMs": 102,
+    "ok": true,
+    "pssKb": 195227,
+    "fpsTouch": 119.9
+   },
+   "port": {
+    "fps": 59.919999999999995,
+    "cpuMs": 1.2600000000000002,
+    "firstFrameMs": 92,
+    "ok": true,
+    "pssKb": 134659,
+    "fpsTouch": 119.89000000000001
+   }
+  },
+  {
+   "name": "Duotone",
+   "animated": true,
+   "diffPct": 0.13,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.037746395897058,
+    "firstFrameMs": 191,
+    "ok": true,
+    "pssKb": 206146,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.90999999999999,
+    "cpuMs": 1.274,
+    "firstFrameMs": 276,
+    "ok": true,
+    "pssKb": 140346,
+    "fpsTouch": 119.94000000000001
+   }
+  },
+  {
+   "name": "Ellipse",
+   "animated": false,
+   "diffPct": 46.27,
+   "vsUpstream": {
+    "claude": 0.29,
+    "port": 45.29
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.090468594581631,
+    "firstFrameMs": 98,
+    "ok": true,
+    "pssKb": 193382,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.90999999999999,
+    "cpuMs": 1.333,
+    "firstFrameMs": 86,
+    "ok": true,
+    "pssKb": 135223,
+    "fpsTouch": 119.89000000000001
+   }
+  },
+  {
+   "name": "Exposure",
+   "animated": true,
+   "diffPct": 4.89,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.146001370797266,
+    "firstFrameMs": 177,
+    "ok": true,
+    "pssKb": 203655,
+    "fpsTouch": 119.9
+   },
+   "port": {
+    "fps": 59.919999999999995,
+    "cpuMs": 1.343,
+    "firstFrameMs": 191,
+    "ok": true,
+    "pssKb": 139453,
+    "fpsTouch": 119.87
+   }
+  },
+  {
+   "name": "Flip",
+   "animated": true,
+   "diffPct": 4.9,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.079751617726912,
+    "firstFrameMs": 186,
+    "ok": true,
+    "pssKb": 205556,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.90999999999999,
+    "cpuMs": 1.3679999999999999,
+    "firstFrameMs": 187,
+    "ok": true,
+    "pssKb": 149561,
+    "fpsTouch": 119.82000000000001
+   }
+  },
+  {
+   "name": "FlowingGradient",
+   "animated": true,
+   "diffPct": 18.55,
+   "vsUpstream": null,
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.070220131598957,
+    "firstFrameMs": 199,
+    "ok": true,
+    "pssKb": 207577,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.356,
+    "firstFrameMs": 222,
+    "ok": true,
+    "pssKb": 140705,
+    "fpsTouch": 119.87
+   }
+  },
+  {
+   "name": "Glow",
+   "animated": true,
+   "diffPct": 5.25,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 7.816725950108577,
+    "firstFrameMs": 263,
+    "ok": true,
+    "pssKb": 273335,
+    "fpsTouch": 116.2
+   },
+   "port": {
+    "fps": 59.90999999999999,
+    "cpuMs": 1.641,
+    "firstFrameMs": 198,
+    "ok": true,
+    "pssKb": 160313,
+    "fpsTouch": 119.89999999999998
+   }
+  },
+  {
+   "name": "Grayscale",
+   "animated": true,
+   "diffPct": 3.84,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.1341737405425025,
+    "firstFrameMs": 187,
+    "ok": true,
+    "pssKb": 203964,
+    "fpsTouch": 119.8
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.277,
+    "firstFrameMs": 188,
+    "ok": true,
+    "pssKb": 139657,
+    "fpsTouch": 119.9
+   }
+  },
+  {
+   "name": "Grid",
+   "animated": false,
+   "diffPct": 0.87,
+   "vsUpstream": {
+    "claude": 1.54,
+    "port": 2.42
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.013673961862391,
+    "firstFrameMs": 105,
+    "ok": true,
+    "pssKb": 194154,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.919999999999995,
+    "cpuMs": 1.275,
+    "firstFrameMs": 87,
+    "ok": true,
+    "pssKb": 135156,
+    "fpsTouch": 119.88999999999999
+   }
+  },
+  {
+   "name": "Heart",
+   "animated": false,
+   "diffPct": 52.63,
+   "vsUpstream": {
+    "claude": 0.32,
+    "port": 51.88
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 4.766564581373131,
+    "firstFrameMs": 97,
+    "ok": true,
+    "pssKb": 194070,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.919999999999995,
+    "cpuMs": 1.282,
+    "firstFrameMs": 88,
+    "ok": true,
+    "pssKb": 135191,
+    "fpsTouch": 119.91000000000001
+   }
+  },
+  {
+   "name": "HexGrid",
+   "animated": false,
+   "diffPct": 0.48,
+   "vsUpstream": {
+    "claude": 1.49,
+    "port": 1.9
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.005269849650431,
+    "firstFrameMs": 110,
+    "ok": true,
+    "pssKb": 195473,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.90999999999999,
+    "cpuMs": 1.291,
+    "firstFrameMs": 106,
+    "ok": true,
+    "pssKb": 145243,
+    "fpsTouch": 119.89000000000001
+   }
+  },
+  {
+   "name": "HueShift",
+   "animated": true,
+   "diffPct": 4.89,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.154987675349919,
+    "firstFrameMs": 84,
+    "ok": true,
+    "pssKb": 196455,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.5979999999999999,
+    "firstFrameMs": 185,
+    "ok": true,
+    "pssKb": 138774,
+    "fpsTouch": 119.82000000000001
+   }
+  },
+  {
+   "name": "Invert",
+   "animated": true,
+   "diffPct": 0.64,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.201881809571114,
+    "firstFrameMs": 185,
+    "ok": true,
+    "pssKb": 204493,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.8210000000000002,
+    "firstFrameMs": 216,
+    "ok": true,
+    "pssKb": 128652,
+    "fpsTouch": 119.88999999999999
+   }
+  },
+  {
+   "name": "LinearGradient",
+   "animated": false,
+   "diffPct": 0.07,
+   "vsUpstream": {
+    "claude": 0.22,
+    "port": 0.21
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 4.934691155899853,
+    "firstFrameMs": 99,
+    "ok": true,
+    "pssKb": 192647,
+    "fpsTouch": 119.8
+   },
+   "port": {
+    "fps": 59.90999999999999,
+    "cpuMs": 1.6860000000000004,
+    "firstFrameMs": 90,
+    "ok": true,
+    "pssKb": 134379,
+    "fpsTouch": 119.35
+   }
+  },
+  {
+   "name": "Marble",
+   "animated": true,
+   "diffPct": 38.43,
+   "vsUpstream": null,
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 4.888795684276137,
+    "firstFrameMs": 123,
+    "ok": true,
+    "pssKb": 197413,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.7020000000000004,
+    "firstFrameMs": 130,
+    "ok": true,
+    "pssKb": 136757,
+    "fpsTouch": 119.83999999999999
+   }
+  },
+  {
+   "name": "MeshGradient",
+   "animated": true,
+   "diffPct": 20.88,
+   "vsUpstream": null,
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.50775456484673,
+    "firstFrameMs": 178,
+    "ok": true,
+    "pssKb": 216021,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 41.699999999999996,
+    "cpuMs": 1.411,
+    "firstFrameMs": 232,
+    "ok": true,
+    "pssKb": 190714,
+    "fpsTouch": 37.21
+   }
+  },
+  {
+   "name": "Mirror",
+   "animated": true,
+   "diffPct": 3.87,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.035979516654831,
+    "firstFrameMs": 204,
+    "ok": true,
+    "pssKb": 206768,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.689,
+    "firstFrameMs": 191,
+    "ok": true,
+    "pssKb": 139076,
+    "fpsTouch": 119.89000000000001
+   }
+  },
+  {
+   "name": "PerlinNoise",
+   "animated": true,
+   "diffPct": 7.33,
+   "vsUpstream": null,
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 4.966480266847161,
+    "firstFrameMs": 110,
+    "ok": true,
+    "pssKb": 196752,
+    "fpsTouch": 119.8
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.576,
+    "firstFrameMs": 95,
+    "ok": true,
+    "pssKb": 124765,
+    "fpsTouch": 119.78
+   }
+  },
+  {
+   "name": "Plasma",
+   "animated": true,
+   "diffPct": 4.89,
+   "vsUpstream": null,
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.102648130782216,
+    "firstFrameMs": 173,
+    "ok": true,
+    "pssKb": 201908,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.4949999999999999,
+    "firstFrameMs": 191,
+    "ok": true,
+    "pssKb": 127841,
+    "fpsTouch": 119.88000000000002
+   }
+  },
+  {
+   "name": "PolarCoordinates",
+   "animated": true,
+   "diffPct": 3.81,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.020869664352186,
+    "firstFrameMs": 195,
+    "ok": true,
+    "pssKb": 204455,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.611,
+    "firstFrameMs": 194,
+    "ok": true,
+    "pssKb": 128789,
+    "fpsTouch": 119.86000000000001
+   }
+  },
+  {
+   "name": "Polygon",
+   "animated": false,
+   "diffPct": 0.5,
+   "vsUpstream": {
+    "claude": 0.05,
+    "port": 2.23
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 4.871543002514242,
+    "firstFrameMs": 96,
+    "ok": true,
+    "pssKb": 195645,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.6729999999999996,
+    "firstFrameMs": 94,
+    "ok": true,
+    "pssKb": 125189,
+    "fpsTouch": 119.9
+   }
+  },
+  {
+   "name": "Posterize",
+   "animated": true,
+   "diffPct": 0.0,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.065685941829503,
+    "firstFrameMs": 180,
+    "ok": true,
+    "pssKb": 204187,
+    "fpsTouch": 119.8
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.798,
+    "firstFrameMs": 210,
+    "ok": true,
+    "pssKb": 139388,
+    "fpsTouch": 119.88999999999999
+   }
+  },
+  {
+   "name": "RadialGradient",
+   "animated": false,
+   "diffPct": 0.02,
+   "vsUpstream": {
+    "claude": 0.25,
+    "port": 0.25
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.014325266807549,
+    "firstFrameMs": 94,
+    "ok": true,
+    "pssKb": 193470,
+    "fpsTouch": 119.8
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.4979999999999998,
+    "firstFrameMs": 93,
+    "ok": true,
+    "pssKb": 124964,
+    "fpsTouch": 119.85
+   }
+  },
+  {
+   "name": "RectangularCoordinates",
+   "animated": true,
+   "diffPct": 10.17,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.030218092135379,
+    "firstFrameMs": 188,
+    "ok": true,
+    "pssKb": 206718,
+    "fpsTouch": 119.9
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.791,
+    "firstFrameMs": 190,
+    "ok": true,
+    "pssKb": 139689,
+    "fpsTouch": 119.85000000000002
+   }
+  },
+  {
+   "name": "Ring",
+   "animated": false,
+   "diffPct": 52.02,
+   "vsUpstream": {
+    "claude": 0.39,
+    "port": 55.77
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 4.92035530454926,
+    "firstFrameMs": 92,
+    "ok": true,
+    "pssKb": 193425,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.889999999999986,
+    "cpuMs": 1.5269999999999997,
+    "firstFrameMs": 91,
+    "ok": true,
+    "pssKb": 124668,
+    "fpsTouch": 119.89000000000001
+   }
+  },
+  {
+   "name": "Ripples",
+   "animated": true,
+   "diffPct": 6.04,
+   "vsUpstream": null,
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 4.956527607442274,
+    "firstFrameMs": 97,
+    "ok": true,
+    "pssKb": 194878,
+    "fpsTouch": 119.6
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.488,
+    "firstFrameMs": 91,
+    "ok": true,
+    "pssKb": 124628,
+    "fpsTouch": 119.9
+   }
+  },
+  {
+   "name": "RoundedRect",
+   "animated": false,
+   "diffPct": 25.51,
+   "vsUpstream": {
+    "claude": 0.47,
+    "port": 25.0
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 4.959080202904612,
+    "firstFrameMs": 99,
+    "ok": true,
+    "pssKb": 193710,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.90999999999999,
+    "cpuMs": 1.5100000000000002,
+    "firstFrameMs": 101,
+    "ok": true,
+    "pssKb": 134762,
+    "fpsTouch": 119.85
+   }
+  },
+  {
+   "name": "Saturation",
+   "animated": true,
+   "diffPct": 4.89,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.088165146953669,
+    "firstFrameMs": 89,
+    "ok": true,
+    "pssKb": 195934,
+    "fpsTouch": 119.8
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.7439999999999998,
+    "firstFrameMs": 189,
+    "ok": true,
+    "pssKb": 139391,
+    "fpsTouch": 119.9
+   }
+  },
+  {
+   "name": "SimplexNoise",
+   "animated": true,
+   "diffPct": 8.67,
+   "vsUpstream": null,
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.083543562853845,
+    "firstFrameMs": 116,
+    "ok": true,
+    "pssKb": 200740,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.90999999999999,
+    "cpuMs": 1.5580000000000003,
+    "firstFrameMs": 108,
+    "ok": true,
+    "pssKb": 136309,
+    "fpsTouch": 119.88000000000002
+   }
+  },
+  {
+   "name": "SineWave",
+   "animated": true,
+   "diffPct": 69.03,
+   "vsUpstream": null,
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.016545983080596,
+    "firstFrameMs": 95,
+    "ok": true,
+    "pssKb": 194993,
+    "fpsTouch": 119.9
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.5290000000000001,
+    "firstFrameMs": 88,
+    "ok": true,
+    "pssKb": 145495,
+    "fpsTouch": 119.88
+   }
+  },
+  {
+   "name": "SolidColor",
+   "animated": false,
+   "diffPct": 0.0,
+   "vsUpstream": {
+    "claude": 0.26,
+    "port": 0.26
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 4.698686587570143,
+    "firstFrameMs": 90,
+    "ok": true,
+    "pssKb": 192143,
+    "fpsTouch": 119.8
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.4520000000000002,
+    "firstFrameMs": 90,
+    "ok": true,
+    "pssKb": 136019,
+    "fpsTouch": 119.91000000000001
+   }
+  },
+  {
+   "name": "Spiral",
+   "animated": true,
+   "diffPct": 68.79,
+   "vsUpstream": null,
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.0594669505101,
+    "firstFrameMs": 100,
+    "ok": true,
+    "pssKb": 196780,
+    "fpsTouch": 119.8
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.5829999999999997,
+    "firstFrameMs": 93,
+    "ok": true,
+    "pssKb": 135236,
+    "fpsTouch": 119.85999999999999
+   }
+  },
+  {
+   "name": "Star",
+   "animated": false,
+   "diffPct": 49.26,
+   "vsUpstream": {
+    "claude": 0.31,
+    "port": 48.92
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.148517488914834,
+    "firstFrameMs": 103,
+    "ok": true,
+    "pssKb": 195968,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.8760000000000001,
+    "firstFrameMs": 87,
+    "ok": true,
+    "pssKb": 135422,
+    "fpsTouch": 119.9
+   }
+  },
+  {
+   "name": "Stripes",
+   "animated": true,
+   "diffPct": 54.94,
+   "vsUpstream": null,
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 4.994857095289798,
+    "firstFrameMs": 97,
+    "ok": true,
+    "pssKb": 196522,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.509,
+    "firstFrameMs": 89,
+    "ok": true,
+    "pssKb": 125111,
+    "fpsTouch": 119.87
+   }
+  },
+  {
+   "name": "Teardrop",
+   "animated": false,
+   "diffPct": 48.15,
+   "vsUpstream": {
+    "claude": 0.27,
+    "port": 48.25
+   },
+   "base": "",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 4.846579095134335,
+    "firstFrameMs": 98,
+    "ok": true,
+    "pssKb": 194150,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.90999999999999,
+    "cpuMs": 1.6620000000000001,
+    "firstFrameMs": 94,
+    "ok": true,
+    "pssKb": 135589,
+    "fpsTouch": 119.92
+   }
+  },
+  {
+   "name": "Tint",
+   "animated": true,
+   "diffPct": 4.0,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.153612786896082,
+    "firstFrameMs": 188,
+    "ok": true,
+    "pssKb": 207288,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.90999999999999,
+    "cpuMs": 1.7719999999999998,
+    "firstFrameMs": 201,
+    "ok": true,
+    "pssKb": 139636,
+    "fpsTouch": 119.91000000000001
+   }
+  },
+  {
+   "name": "Tritone",
+   "animated": true,
+   "diffPct": 0.0,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60.1,
+    "cpuMs": 5.163307405145474,
+    "firstFrameMs": 219,
+    "ok": true,
+    "pssKb": 207844,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.7,
+    "firstFrameMs": 475,
+    "ok": true,
+    "pssKb": 132747,
+    "fpsTouch": 119.87
+   }
+  },
+  {
+   "name": "Twirl",
+   "animated": true,
+   "diffPct": 4.66,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.148314412462269,
+    "firstFrameMs": 184,
+    "ok": true,
+    "pssKb": 206202,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.7890000000000001,
+    "firstFrameMs": 191,
+    "ok": true,
+    "pssKb": 139463,
+    "fpsTouch": 119.84
+   }
+  },
+  {
+   "name": "Vignette",
+   "animated": true,
+   "diffPct": 4.9,
+   "vsUpstream": null,
+   "base": "plasma",
+   "claude": {
+    "fps": 60,
+    "cpuMs": 5.053851309910806,
+    "firstFrameMs": 191,
+    "ok": true,
+    "pssKb": 205492,
+    "fpsTouch": 120
+   },
+   "port": {
+    "fps": 59.89999999999999,
+    "cpuMs": 1.7269999999999999,
+    "firstFrameMs": 188,
+    "ok": true,
+    "pssKb": 139244,
+    "fpsTouch": 119.94000000000001
+   }
+  }
+ ],
+ "animatedChecks": [
+  {
+   "name": "Aurora",
+   "claude": "与原版一致",
+   "port": "上下颠倒：光幕跑到了屏幕底部"
+  },
+  {
+   "name": "MeshGradient",
+   "claude": "与原版一致",
+   "port": "色块布局不同（meshAnchors 按 1:1 比例离线烘焙）；帧率 42 fps"
+  },
+  {
+   "name": "SineWave",
+   "claude": "与原版一致",
+   "port": "整屏纯白，没有画出波形"
+  },
+  {
+   "name": "Stripes",
+   "claude": "与原版一致（斜线方向相同）",
+   "port": "变成人字形折线"
+  },
+  {
+   "name": "Spiral",
+   "claude": "与原版一致",
+   "port": "旋臂方向与原版不同"
+  },
+  {
+   "name": "FlowingGradient",
+   "claude": "与原版一致",
+   "port": "基本一致（时刻不同）"
+  },
+  {
+   "name": "Marble",
+   "claude": "与原版一致",
+   "port": "基本一致（时刻不同）"
+  },
+  {
+   "name": "Ripples",
+   "claude": "与原版一致",
+   "port": "基本一致"
+  }
+ ],
+ "touchFps": {
+  "claude": 119.62291666666665,
+  "port": 118.14604166666668,
+  "count": 48
+ },
+ "fidelity": {
+  "claudeAvg": 0.44875,
+  "portAvg": 24.654375,
+  "claudeClose": 16,
+  "portClose": 7,
+  "count": 16,
+  "items": [
+   {
+    "name": "Arc",
+    "claude": 0.16,
+    "port": 38.25
+   },
+   {
+    "name": "Checkerboard",
+    "claude": 0.13,
+    "port": 19.84
+   },
+   {
+    "name": "Circle",
+    "claude": 0.0,
+    "port": 0.0
+   },
+   {
+    "name": "Cross",
+    "claude": 1.03,
+    "port": 54.0
+   },
+   {
+    "name": "Ellipse",
+    "claude": 0.29,
+    "port": 45.29
+   },
+   {
+    "name": "Grid",
+    "claude": 1.54,
+    "port": 2.42
+   },
+   {
+    "name": "Heart",
+    "claude": 0.32,
+    "port": 51.88
+   },
+   {
+    "name": "HexGrid",
+    "claude": 1.49,
+    "port": 1.9
+   },
+   {
+    "name": "LinearGradient",
+    "claude": 0.22,
+    "port": 0.21
+   },
+   {
+    "name": "Polygon",
+    "claude": 0.05,
+    "port": 2.23
+   },
+   {
+    "name": "RadialGradient",
+    "claude": 0.25,
+    "port": 0.25
+   },
+   {
+    "name": "Ring",
+    "claude": 0.39,
+    "port": 55.77
+   },
+   {
+    "name": "RoundedRect",
+    "claude": 0.47,
+    "port": 25.0
+   },
+   {
+    "name": "SolidColor",
+    "claude": 0.26,
+    "port": 0.26
+   },
+   {
+    "name": "Star",
+    "claude": 0.31,
+    "port": 48.92
+   },
+   {
+    "name": "Teardrop",
+    "claude": 0.27,
+    "port": 48.25
+   }
+  ]
+ }
+}

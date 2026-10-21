@@ -1,0 +1,1 @@
+{ "string": [ { "name": "module_desc", "value": "WebGPU Effects demo" }, { "name": "app_name", "value": "WebGPU 特效" }, { "name": "camera_reason", "value": "用于摄像头类特效（WebcamTexture）" } ] }

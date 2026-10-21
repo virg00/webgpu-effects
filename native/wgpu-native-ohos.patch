@@ -1,0 +1,54 @@
+diff --git a/src/lib.rs b/src/lib.rs
+index e725738..f1d368a 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -3076,9 +3076,9 @@ pub unsafe extern "C" fn wgpuQueueSubmit(
+     command_count: usize,
+     commands: *const native::WGPUCommandBuffer,
+ ) {
+-    let (queue_id, context) = {
++    let (queue_id, context, error_sink) = {
+         let queue = queue.as_ref().expect("invalid queue");
+-        (queue.queue.id, &queue.queue.context)
++        (queue.queue.id, &queue.queue.context, &queue.error_sink)
+     };
+ 
+     let command_buffers = make_slice(commands, command_count)
+@@ -3090,8 +3090,9 @@ pub unsafe extern "C" fn wgpuQueueSubmit(
+         })
+         .collect::<SmallVec<[_; 4]>>();
+ 
++    // An invalid command buffer is a validation error (as in the browser), not a reason to abort.
+     if let Err(cause) = context.queue_submit(queue_id, &command_buffers) {
+-        handle_error_fatal(cause.1, "wgpuQueueSubmit");
++        handle_error(error_sink, cause.1, None, "wgpuQueueSubmit");
+     }
+ }
+ 
+@@ -4055,7 +4056,7 @@ pub unsafe extern "C" fn wgpuSurfaceConfigure(
+     ));
+ 
+     match context.surface_configure(surface.id, device.id, &surface_config) {
+-        Some(cause) => handle_error_fatal(cause, "wgpuSurfaceConfigure"),
++        Some(cause) => handle_error(&device.error_sink, cause, None, "wgpuSurfaceConfigure"),
+         None => {
+             let mut surface_data_guard = surface.data.lock();
+             *surface_data_guard = Some(SurfaceData {
+diff --git a/src/logging.rs b/src/logging.rs
+index f396750..3e044dd 100644
+--- a/src/logging.rs
++++ b/src/logging.rs
+@@ -81,6 +81,13 @@ pub extern "C" fn wgpuSetLogCallback(
+     if !logger.initialized {
+         logger.initialized = true;
+         log::set_logger(&Logger).unwrap();
++        // Panics abort the host process; route the message through the log callback first so
++        // platforms without a visible stderr (OpenHarmony) still see why.
++        let previous = std::panic::take_hook();
++        std::panic::set_hook(Box::new(move |info| {
++            log::error!("panic: {info}");
++            previous(info);
++        }));
+         if log::max_level() == LevelFilter::Off {
+             log::set_max_level(LevelFilter::Warn);
+         }

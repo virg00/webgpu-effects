@@ -1,0 +1,7 @@
+{
+  "module": {
+    "name": "webgpu_effects",
+    "type": "har",
+    "deviceTypes": ["phone", "tablet", "2in1"]
+  }
+}

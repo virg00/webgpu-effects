@@ -1,0 +1,171 @@
+{
+  "schema": 1,
+  "id": "dot-grid",
+  "name": "DotGrid",
+  "category": "Textures",
+  "layer": "background",
+  "cost": "very-low",
+  "role": "generator",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [],
+  "base": null,
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": null
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "color": {
+      "default": "#ffffff",
+      "description": "The color of the dot",
+      "ui": {
+        "type": "color",
+        "label": "Color",
+        "group": "Colors"
+      }
+    },
+    "density": {
+      "default": 30,
+      "description": "The number of dots along the canvas height (the width fits as many as the aspect ratio allows)",
+      "ui": {
+        "type": "range",
+        "min": 1,
+        "max": 200,
+        "step": 1,
+        "label": "Density",
+        "group": "Effect"
+      }
+    },
+    "dotSize": {
+      "default": 0.3,
+      "description": "The size of each dot, zero (0) being invisible, one (1) filled the grid with no gaps",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "label": "Dot Size",
+        "group": "Effect"
+      }
+    },
+    "offset": {
+      "default": 0,
+      "description": "Horizontal stagger of alternating rows (0.5 = classic polka-dot brick offset)",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "label": "Row Offset",
+        "group": "Effect"
+      }
+    },
+    "speed": {
+      "default": 0,
+      "description": "Animates the rows drifting horizontally (0 = static)",
+      "ui": {
+        "type": "range",
+        "min": -3,
+        "max": 3,
+        "step": 0.01,
+        "label": "Speed",
+        "group": "Animation"
+      }
+    },
+    "speedVariance": {
+      "default": 0.3,
+      "description": "Per-row random speed variance for irregular drifting motion",
+      "ui": {
+        "type": "range",
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "label": "Speed Variance",
+        "group": "Animation"
+      }
+    },
+    "twinkle": {
+      "default": 0,
+      "description": "Intensity of the twinkle effect (0 = off, 1 = full twinkle)",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "label": "Twinkle",
+        "group": "Animation"
+      }
+    }
+  },
+  "defaults": {
+    "color": "#ffffff",
+    "density": 30,
+    "dotSize": 0.3,
+    "offset": 0,
+    "speed": 0,
+    "speedVariance": 0.3,
+    "twinkle": 0
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_n.density": 30,
+    "n_n.dotSize": 0.3,
+    "n_n.offset": 0,
+    "n_n.speed": 0,
+    "n_n.speedVariance": 0.3,
+    "n_n.twinkle": 0
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/DotGrid/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

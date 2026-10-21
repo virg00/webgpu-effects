@@ -1,0 +1,402 @@
+{
+  "schema": 1,
+  "id": "mesh-gradient",
+  "name": "MeshGradient",
+  "category": "Textures",
+  "layer": "background",
+  "cost": "high",
+  "role": "generator",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [],
+  "base": null,
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": null
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "colorA": {
+      "default": "#1a0533",
+      "description": "First gradient color (two-color fallback when stops are cleared)",
+      "ui": {
+        "type": "color",
+        "label": "Color A",
+        "group": "Colors"
+      }
+    },
+    "colorB": {
+      "default": "#ffdf8e",
+      "description": "Second gradient color (two-color fallback when stops are cleared)",
+      "ui": {
+        "type": "color",
+        "label": "Color B",
+        "group": "Colors"
+      }
+    },
+    "stops": {
+      "default": [
+        {
+          "color": "#1a0533",
+          "position": 0
+        },
+        {
+          "color": "#6d2fd1",
+          "position": 0.26
+        },
+        {
+          "color": "#e04b9e",
+          "position": 0.52
+        },
+        {
+          "color": "#ff8c42",
+          "position": 0.76
+        },
+        {
+          "color": "#ffdf8e",
+          "position": 1
+        }
+      ],
+      "description": "Multi-stop gradient colors (overrides Color A / Color B when set)",
+      "ui": {
+        "type": "gradient-stops",
+        "label": "Colors",
+        "group": "Colors"
+      }
+    },
+    "colorSpace": {
+      "default": "oklab",
+      "description": "Color space for color interpolation",
+      "ui": {
+        "type": "select",
+        "options": [
+          {
+            "label": "Linear RGB",
+            "value": "linear"
+          },
+          {
+            "label": "OKLCh",
+            "value": "oklch"
+          },
+          {
+            "label": "OKLAB",
+            "value": "oklab"
+          },
+          {
+            "label": "HSL",
+            "value": "hsl"
+          },
+          {
+            "label": "HSV",
+            "value": "hsv"
+          },
+          {
+            "label": "LCH",
+            "value": "lch"
+          }
+        ],
+        "label": "Color Space",
+        "group": "Colors"
+      }
+    },
+    "count": {
+      "default": 5,
+      "description": "Number of color points scattered across the canvas",
+      "ui": {
+        "type": "range",
+        "min": 2,
+        "max": 8,
+        "step": 1,
+        "label": "Points",
+        "group": "Effect"
+      }
+    },
+    "smoothness": {
+      "default": 2,
+      "description": "How smoothly the color points blend into each other",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 5,
+        "step": 0.01,
+        "label": "Smoothness",
+        "group": "Effect"
+      }
+    },
+    "variation": {
+      "default": 0.35,
+      "description": "Varies edge softness across the canvas — some color boundaries crisp, others diffuse",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "label": "Variation",
+        "group": "Effect"
+      }
+    },
+    "swirl": {
+      "default": 0.3,
+      "description": "Vortex rotation that spirals the field around the frame centre — negative values spin the other way",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": -1,
+        "max": 1,
+        "step": 0.01,
+        "label": "Swirl",
+        "group": "Effect"
+      }
+    },
+    "drift": {
+      "default": 0.5,
+      "description": "How far the color points wander from their home positions",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "label": "Drift",
+        "group": "Effect"
+      }
+    },
+    "wrapping": {
+      "default": 0,
+      "description": "Wraps the palette back through itself where colors meet — banded seams where the field pinches, smooth elsewhere",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "label": "Wrapping",
+        "group": "Effect"
+      }
+    },
+    "speed": {
+      "default": 1,
+      "description": "Animation speed",
+      "ui": {
+        "type": "range",
+        "min": 0,
+        "max": 10,
+        "step": 0.1,
+        "label": "Speed",
+        "group": "Animation"
+      }
+    },
+    "seed": {
+      "default": 0,
+      "description": "Random seed for the point layout and palette assignment",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "label": "Seed",
+        "group": "Effect"
+      }
+    }
+  },
+  "defaults": {
+    "colorA": "#1a0533",
+    "colorB": "#ffdf8e",
+    "stops": [
+      {
+        "color": "#1a0533",
+        "position": 0
+      },
+      {
+        "color": "#6d2fd1",
+        "position": 0.26
+      },
+      {
+        "color": "#e04b9e",
+        "position": 0.52
+      },
+      {
+        "color": "#ff8c42",
+        "position": 0.76
+      },
+      {
+        "color": "#ffdf8e",
+        "position": 1
+      }
+    ],
+    "colorSpace": "oklab",
+    "count": 5,
+    "smoothness": 2,
+    "variation": 0.35,
+    "swirl": 0.3,
+    "drift": 0.5,
+    "wrapping": 0,
+    "speed": 1,
+    "seed": 0
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.colorA": [
+      0.0087653249502182,
+      0.0018101484747603536,
+      0.03042888268828392,
+      1
+    ],
+    "n_n.colorB": [
+      0.9534691572189331,
+      0.7466102838516235,
+      0.3167990744113922,
+      1
+    ],
+    "n_n.colorsArray": [
+      0.0087653249502182,
+      0.0018101484747603536,
+      0.03042888268828392,
+      1,
+      0.13082264363765717,
+      0.03255872055888176,
+      0.5852150321006775,
+      1,
+      0.6255581974983215,
+      0.0927676409482956,
+      0.32914724946022034,
+      1,
+      0.8690214157104492,
+      0.28673964738845825,
+      0.08567428588867188,
+      1,
+      0.9534691572189331,
+      0.7466102838516235,
+      0.3167990744113922,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_n.positionsArray": [
+      0,
+      0.26,
+      0.52,
+      0.76,
+      1,
+      0,
+      0,
+      0
+    ],
+    "n_n.convertedColorsArray": [
+      0.18886502382578838,
+      0.04131990278935316,
+      -0.07422597880366455,
+      0.489808481382918,
+      0.09049508856680144,
+      -0.20833719024389152,
+      0.642286943998187,
+      0.19786895512861968,
+      -0.03532826492069763,
+      0.7535721320177634,
+      0.10431834138447704,
+      0.12610323370955812,
+      0.9128567968151321,
+      0.002422966066432386,
+      0.10609872286072763,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_n.stopCount": 5,
+    "n_n.colorSpace": 2,
+    "n_n.count": 5,
+    "n_n.smoothness": 2,
+    "n_n.variation": 0.35,
+    "n_n.swirl": 0.3,
+    "n_n.drift": 0.5,
+    "n_n.wrapping": 0,
+    "n_n.speed": 1,
+    "n_n.seed": 0,
+    "n_n.meshAnchors": [
+      0.475480854511261,
+      0.7920603156089783,
+      0.27432483434677124,
+      0.24351289868354797,
+      0.9595577120780945,
+      0.6309231519699097,
+      0.28092777729034424,
+      0.7812724113464355,
+      0.7896980047225952,
+      -0.05405455827713013,
+      0.8816443681716919,
+      1.0959333181381226,
+      -0.24309325218200684,
+      0.4681091904640198,
+      1.1742360591888428,
+      0.16580945253372192
+    ]
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/MeshGradient/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

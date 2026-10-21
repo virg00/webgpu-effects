@@ -1,0 +1,199 @@
+{
+  "schema": 1,
+  "id": "sine-wave",
+  "name": "SineWave",
+  "category": "Textures",
+  "layer": "main",
+  "cost": "very-low",
+  "role": "generator",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [],
+  "base": null,
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": null
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "color": {
+      "default": "#ffffff",
+      "description": "The color of the sine wave",
+      "ui": {
+        "type": "color",
+        "label": "Color",
+        "group": "Colors"
+      }
+    },
+    "amplitude": {
+      "default": 0.15,
+      "description": "The height/amplitude of the sine wave",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "label": "Amplitude",
+        "group": "Effect"
+      }
+    },
+    "frequency": {
+      "default": 1,
+      "description": "The frequency/number of wave cycles",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0.1,
+        "max": 20,
+        "step": 0.1,
+        "label": "Frequency",
+        "group": "Effect"
+      }
+    },
+    "speed": {
+      "default": 1,
+      "description": "The animation speed of the wave",
+      "ui": {
+        "type": "range",
+        "min": -5,
+        "max": 5,
+        "step": 0.1,
+        "label": "Speed",
+        "group": "Animation"
+      }
+    },
+    "angle": {
+      "default": 0,
+      "description": "The rotation angle of the wave (in degrees)",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 360,
+        "step": 1,
+        "label": "Angle",
+        "group": "Effect"
+      }
+    },
+    "position": {
+      "default": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "description": "The center position of the wave",
+      "ui": {
+        "type": "position",
+        "label": "Position",
+        "group": "Position"
+      }
+    },
+    "thickness": {
+      "default": 0.2,
+      "description": "The thickness of the wave line",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 2,
+        "step": 0.1,
+        "label": "Thickness",
+        "group": "Effect"
+      }
+    },
+    "softness": {
+      "default": 0.4,
+      "description": "Edge softness of the wave line",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "label": "Softness",
+        "group": "Effect"
+      }
+    }
+  },
+  "defaults": {
+    "color": "#ffffff",
+    "amplitude": 0.15,
+    "frequency": 1,
+    "speed": 1,
+    "angle": 0,
+    "position": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "thickness": 0.2,
+    "softness": 0.4
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_n.amplitude": 0.15,
+    "n_n.frequency": 1,
+    "n_n.speed": 1,
+    "n_n.angle": 0,
+    "n_n.position": [
+      0.5,
+      0.5,
+      0,
+      0
+    ],
+    "n_n.thickness": 0.2,
+    "n_n.softness": 0.4
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/SineWave/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

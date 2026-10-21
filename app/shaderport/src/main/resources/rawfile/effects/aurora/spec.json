@@ -1,0 +1,299 @@
+{
+  "schema": 1,
+  "id": "aurora",
+  "name": "Aurora",
+  "category": "Textures",
+  "layer": "background",
+  "cost": "medium",
+  "role": "generator",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [],
+  "base": null,
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": null
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "colorA": {
+      "default": "#a533f8",
+      "description": "Edge color at the curtain base",
+      "ui": {
+        "type": "color",
+        "label": "Color A",
+        "group": "Colors"
+      }
+    },
+    "colorB": {
+      "default": "#22ee88",
+      "description": "Core color in the bright center",
+      "ui": {
+        "type": "color",
+        "label": "Color B",
+        "group": "Colors"
+      }
+    },
+    "colorC": {
+      "default": "#1694e8",
+      "description": "Tip color at the ray ends",
+      "ui": {
+        "type": "color",
+        "label": "Color C",
+        "group": "Colors"
+      }
+    },
+    "colorSpace": {
+      "default": "linear",
+      "description": "Color space for color interpolation",
+      "ui": {
+        "type": "select",
+        "options": [
+          {
+            "label": "Linear RGB",
+            "value": "linear"
+          },
+          {
+            "label": "OKLCh",
+            "value": "oklch"
+          },
+          {
+            "label": "OKLAB",
+            "value": "oklab"
+          },
+          {
+            "label": "HSL",
+            "value": "hsl"
+          },
+          {
+            "label": "HSV",
+            "value": "hsv"
+          },
+          {
+            "label": "LCH",
+            "value": "lch"
+          }
+        ],
+        "label": "Color Space",
+        "group": "Colors"
+      }
+    },
+    "balance": {
+      "default": 50,
+      "description": "Shifts color distribution across the curtain height",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "label": "Balance",
+        "group": "Colors"
+      }
+    },
+    "intensity": {
+      "default": 80,
+      "description": "Overall aurora brightness",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "label": "Intensity",
+        "group": "Aurora"
+      }
+    },
+    "curtainCount": {
+      "default": 4,
+      "description": "Number of aurora curtain layers",
+      "ui": {
+        "type": "range",
+        "min": 1,
+        "max": 4,
+        "step": 1,
+        "label": "Curtains",
+        "group": "Aurora"
+      }
+    },
+    "speed": {
+      "default": 5,
+      "description": "Animation speed",
+      "ui": {
+        "type": "range",
+        "min": -10,
+        "max": 10,
+        "step": 0.1,
+        "label": "Speed",
+        "group": "Aurora"
+      }
+    },
+    "waviness": {
+      "default": 50,
+      "description": "How much the curtains undulate",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 200,
+        "step": 1,
+        "label": "Waviness",
+        "group": "Aurora"
+      }
+    },
+    "rayDensity": {
+      "default": 20,
+      "description": "Density of vertical ray structures",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "label": "Ray Detail",
+        "group": "Aurora"
+      }
+    },
+    "height": {
+      "default": 120,
+      "description": "How tall the aurora extends",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 10,
+        "max": 200,
+        "step": 1,
+        "label": "Height",
+        "group": "Scene"
+      }
+    },
+    "center": {
+      "default": {
+        "x": 0.5,
+        "y": 0
+      },
+      "description": "Center position of the aurora",
+      "ui": {
+        "type": "position",
+        "label": "Center",
+        "group": "Scene"
+      }
+    },
+    "seed": {
+      "default": 0,
+      "description": "Random seed for variation",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "label": "Seed",
+        "group": "Aurora"
+      }
+    }
+  },
+  "defaults": {
+    "colorA": "#a533f8",
+    "colorB": "#22ee88",
+    "colorC": "#1694e8",
+    "colorSpace": "linear",
+    "balance": 50,
+    "intensity": 80,
+    "curtainCount": 4,
+    "speed": 5,
+    "waviness": 50,
+    "rayDensity": 20,
+    "height": 120,
+    "center": {
+      "x": 0.5,
+      "y": 0
+    },
+    "seed": 0
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.colorA": [
+      0.3153386414051056,
+      0.0444956012070179,
+      0.8635163307189941,
+      1
+    ],
+    "n_n.colorB": [
+      0.16495004296302795,
+      0.8271427750587463,
+      0.2863437533378601,
+      1
+    ],
+    "n_n.colorC": [
+      0.05917457491159439,
+      0.28657451272010803,
+      0.7563228011131287,
+      1
+    ],
+    "n_n.colorSpace": 0,
+    "n_n.balance": 50,
+    "n_n.intensity": 80,
+    "n_n.curtainCount": 4,
+    "n_n.speed": 5,
+    "n_n.waviness": 50,
+    "n_n.rayDensity": 20,
+    "n_n.height": 120,
+    "n_n.center": [
+      0.5,
+      1,
+      0,
+      0
+    ],
+    "n_n.seed": 0
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/Aurora/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

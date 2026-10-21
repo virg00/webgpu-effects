@@ -1,0 +1,216 @@
+{
+  "schema": 1,
+  "id": "grid",
+  "name": "Grid",
+  "category": "Textures",
+  "layer": "background",
+  "cost": "very-low",
+  "role": "generator",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [],
+  "base": null,
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": null
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "color": {
+      "default": "#ffffff",
+      "description": "The color of the grid lines",
+      "ui": {
+        "type": "color",
+        "label": "Line Color",
+        "group": "Colors"
+      }
+    },
+    "cellColor": {
+      "default": "transparent",
+      "description": "Fill color of the cells (transparent = lines only). Pair with Variation for a tiled look.",
+      "ui": {
+        "type": "color",
+        "label": "Cell Color",
+        "group": "Colors"
+      }
+    },
+    "cells": {
+      "default": 10,
+      "description": "Number of cells along the canvas height (cells stay square; the width fits as many as the aspect ratio allows)",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "label": "Cells",
+        "group": "Effect"
+      }
+    },
+    "thickness": {
+      "default": 1,
+      "description": "Thickness of grid lines (normalized, 0.0-1.0)",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 20,
+        "step": 0.1,
+        "label": "Thickness",
+        "group": "Effect"
+      }
+    },
+    "rotation": {
+      "default": 0,
+      "description": "Rotation of the grid in degrees. At 45° this produces a crosshatch/diamond pattern.",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 360,
+        "step": 1,
+        "label": "Rotation",
+        "group": "Effect"
+      }
+    },
+    "softness": {
+      "default": 0,
+      "description": "Softness of the line edges (0 = crisp, 1 = very soft)",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "label": "Softness",
+        "group": "Effect"
+      }
+    },
+    "variation": {
+      "default": 0,
+      "description": "Per-cell random lightening/darkening of the cell fill color",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "label": "Variation",
+        "group": "Effect"
+      }
+    },
+    "colorSpace": {
+      "default": "linear",
+      "description": "Color space for color interpolation",
+      "ui": {
+        "type": "select",
+        "options": [
+          {
+            "label": "Linear RGB",
+            "value": "linear"
+          },
+          {
+            "label": "OKLCh",
+            "value": "oklch"
+          },
+          {
+            "label": "OKLAB",
+            "value": "oklab"
+          },
+          {
+            "label": "HSL",
+            "value": "hsl"
+          },
+          {
+            "label": "HSV",
+            "value": "hsv"
+          },
+          {
+            "label": "LCH",
+            "value": "lch"
+          }
+        ],
+        "label": "Color Space",
+        "group": "Colors"
+      }
+    }
+  },
+  "defaults": {
+    "color": "#ffffff",
+    "cellColor": "transparent",
+    "cells": 10,
+    "thickness": 1,
+    "rotation": 0,
+    "softness": 0,
+    "variation": 0,
+    "colorSpace": "linear"
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_n.cellColor": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "n_n.cells": 10,
+    "n_n.thickness": 1,
+    "n_n.rotation": 0,
+    "n_n.softness": 0,
+    "n_n.variation": 0,
+    "n_n.colorSpace": 0
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/Grid/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

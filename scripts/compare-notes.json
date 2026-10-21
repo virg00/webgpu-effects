@@ -1,0 +1,124 @@
+{
+  "rows": [
+    {
+      "topic": "技术路线",
+      "claude": "运行时直接跑上游 shaders 引擎（组合器、TypeGPU 生成 WGSL 全部原样），自带 WebGPU 实现：NAPI → wgpu-native → Vulkan，XComponent 上用 VK_OHOS_surface 出图。",
+      "port": "离线把每个效果的 WGSL 用 naga 转成 GLSL ES 3.00，连同参数规格打进 HAR；宿主自己写 EGL/GLES 渲染器按规格绘制。",
+      "verdict": "两边底层都用 naga：shaderport 离线转一次，Claude 版在运行时由 wgpu 编成 SPIR-V。"
+    },
+    {
+      "topic": "为什么一个是 WebGPU、一个是 GLES 3",
+      "claude": "上游库只支持 WebGPU（WGSL 着色器、计算着色器、TypeGPU 运行时生成着色器）。鸿蒙原生没有 WebGPU，Claude 版就在原生层实现了一套 WebGPU 接口，底下用 Vulkan 执行（Chrome 在安卓上也是这样实现 WebGPU 的），于是上游引擎的代码一行不改直接运行。",
+      "port": "把上游的着色器离线翻译成 OpenGL ES 3.0 的 GLSL，上游引擎在 CPU 侧做的事（组合、参数打包、动画时间、驱动）由宿主重新实现；GLES 3.0 没有计算着色器，相关效果只能放弃。",
+      "verdict": "Claude 版更符合原版：跑的就是原版引擎本身，实测与原版差异 0.45%，shaderport 24.7%；GLES 3 的好处是更老的系统和模拟器也能跑、体积更小。"
+    },
+    {
+      "topic": "效果覆盖",
+      "claude": "199 个（上游 200 个中只缺浏览器专属的 HTMLInCanvas），真机全部验证可运行。",
+      "port": "48 个：纹理 19、形状 10、调色 10、扭曲 5、风格化 2、模糊 1、交互 1。",
+      "verdict": "Claude 版覆盖约 4 倍；材质/光影、流体粒子、转场、模糊大类只有 Claude 版有。"
+    },
+    {
+      "topic": "计算着色器与跨帧模拟",
+      "claude": "支持（Boids、烟雾、反应扩散、流体粒子、磁力铁屑等全部可用）。",
+      "port": "不支持（GLES 3.0 无 compute；README 明确不收录 Smoke / ReactionDiffusion / Boids）。",
+      "verdict": "这是两条路线的本质差别之一，Claude 版完胜。"
+    },
+    {
+      "topic": "组合能力",
+      "claude": "完整上游语义：任意图层树、20 种混合模式、遮罩、包围盒、属性驱动（自动动画 / 跟手 / 读取其它图层）。",
+      "port": "每个效果是预先固定的组合（滤镜一律套在 Plasma 上），没有组合树接口。",
+      "verdict": "需要“图片 + 模糊 + 暗角”这类组合时只能用 Claude 版。"
+    },
+    {
+      "topic": "外部输入",
+      "claude": "图片（rawfile / https / 文件 / data URL）、视频（AVPlayer）、摄像头、文字（2D 画布栅格化）。",
+      "port": "无；滤镜类效果的输入固定为 Plasma。",
+      "verdict": "Claude 版可直接做真实业务场景（给照片、视频加效果）。"
+    },
+    {
+      "topic": "接入方式",
+      "claude": "一个 ArkUI 组件：ShaderView({ layers: [LinearGradient({...}), CursorTrail()] })，带类型的 200 个工厂函数，属性变更自动增量更新。",
+      "port": "HAR 只给 GLSL 源码 + 参数元数据；宿主要自己写 XComponent + EGL + UBO 反射 + RTT 渲染器（参考实现约 1000 行 C++）。",
+      "verdict": "Claude 版开箱即用；shaderport 更像“素材包 + 规范”。"
+    },
+    {
+      "topic": "包体积（arm64，release）",
+      "claude": "约 10.5 MB：引擎字节码 6.2 MB + wgpu/Vulkan 原生库 4.3 MB（另需系统 libc++）。",
+      "port": "运行时必需约 1 MB（GLSL 0.47 MB + 规格 0.3 MB + 渲染器 0.24 MB）；HAR 里另带 5.3 MB 参考图（可删）。",
+      "verdict": "shaderport 小一个数量级，是它最大的优势。"
+    },
+    {
+      "topic": "系统与设备要求",
+      "claude": "Vulkan 1.1；当前构建目标 API 24（HarmonyOS 6.1）。",
+      "port": "OpenGL ES 3.0；API 12+（HarmonyOS 5.0）。",
+      "verdict": "shaderport 覆盖的系统版本更老、更广。"
+    },
+    {
+      "topic": "模拟器",
+      "claude": "模拟器的 Vulkan 转译层（宿主 MoltenVK）对复杂着色器会转换失败并让模拟器崩溃，只有简单效果能跑；必须真机调试。",
+      "port": "GLES 在模拟器上可用，作者称 48/48 逐像素通过。",
+      "verdict": "开发调试体验 shaderport 更好。"
+    },
+    {
+      "topic": "与上游的一致性",
+      "claude": "同一份引擎代码，行为一致；仅对 bundle 做了一处语法级改写绕过方舟运行时缺陷，WGSL 只做两处等价改写。",
+      "port": "离线烘焙，部分语义有偏差：参考渲染器把 _animTime 直接写成全局时间，而上游按 deltaTime × speed 累加——所有 speed 参数不生效，默认 speed≠1 的效果（如 Plasma 默认 speed=2）动画节奏与上游不同；meshAnchors 按 1:1 比例烘焙。",
+      "verdict": "Claude 版天然与上游一致；shaderport 的动画速度可在分屏里直接看出差别。"
+    },
+    {
+      "topic": "跟进上游新版本",
+      "claude": "一条命令：scripts/sync-upstream.sh 拉取新 npm 版本、自动补丁并重新生成类型。",
+      "port": "需要重新导出 WGSL、逐效果转换、生成规格与参考图，新效果还要过 GLES 3.0 能力门禁。",
+      "verdict": "Claude 版维护成本低。"
+    },
+    {
+      "topic": "许可证",
+      "claude": "上游 MIT + wgpu MIT/Apache-2.0。",
+      "port": "Apache-2.0（效果来自上游 MIT）。",
+      "verdict": "都可商用。"
+    }
+  ],
+  "animatedChecks": [
+    {
+      "name": "Aurora",
+      "claude": "与原版一致",
+      "port": "上下颠倒：光幕跑到了屏幕底部"
+    },
+    {
+      "name": "MeshGradient",
+      "claude": "与原版一致",
+      "port": "色块布局不同（meshAnchors 按 1:1 比例离线烘焙）；帧率 42 fps"
+    },
+    {
+      "name": "SineWave",
+      "claude": "与原版一致",
+      "port": "整屏纯白，没有画出波形"
+    },
+    {
+      "name": "Stripes",
+      "claude": "与原版一致（斜线方向相同）",
+      "port": "变成人字形折线"
+    },
+    {
+      "name": "Spiral",
+      "claude": "与原版一致",
+      "port": "旋臂方向与原版不同"
+    },
+    {
+      "name": "FlowingGradient",
+      "claude": "与原版一致",
+      "port": "基本一致（时刻不同）"
+    },
+    {
+      "name": "Marble",
+      "claude": "与原版一致",
+      "port": "基本一致（时刻不同）"
+    },
+    {
+      "name": "Ripples",
+      "claude": "与原版一致",
+      "port": "基本一致"
+    }
+  ]
+}

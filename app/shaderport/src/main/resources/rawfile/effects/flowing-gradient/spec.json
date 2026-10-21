@@ -1,0 +1,235 @@
+{
+  "schema": 1,
+  "id": "flowing-gradient",
+  "name": "FlowingGradient",
+  "category": "Textures",
+  "layer": "background",
+  "cost": "medium",
+  "role": "generator",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [],
+  "base": null,
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": null
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "colorA": {
+      "default": "#0a0015",
+      "description": "Deep background color",
+      "ui": {
+        "type": "color",
+        "label": "Color A",
+        "group": "Colors"
+      }
+    },
+    "colorB": {
+      "default": "#6b17e6",
+      "description": "Primary accent color",
+      "ui": {
+        "type": "color",
+        "label": "Color B",
+        "group": "Colors"
+      }
+    },
+    "colorC": {
+      "default": "#ff4d6a",
+      "description": "Secondary accent color",
+      "ui": {
+        "type": "color",
+        "label": "Color C",
+        "group": "Colors"
+      }
+    },
+    "colorD": {
+      "default": "#ff6b35",
+      "description": "Tertiary accent color",
+      "ui": {
+        "type": "color",
+        "label": "Color D",
+        "group": "Colors"
+      }
+    },
+    "colorSpace": {
+      "default": "oklch",
+      "description": "Color space for color interpolation",
+      "ui": {
+        "type": "select",
+        "options": [
+          {
+            "label": "Linear RGB",
+            "value": "linear"
+          },
+          {
+            "label": "OKLCh",
+            "value": "oklch"
+          },
+          {
+            "label": "OKLAB",
+            "value": "oklab"
+          },
+          {
+            "label": "HSL",
+            "value": "hsl"
+          },
+          {
+            "label": "HSV",
+            "value": "hsv"
+          },
+          {
+            "label": "LCH",
+            "value": "lch"
+          }
+        ],
+        "label": "Color Space",
+        "group": "Colors"
+      }
+    },
+    "speed": {
+      "default": 1,
+      "description": "Animation speed",
+      "ui": {
+        "type": "range",
+        "min": 0,
+        "max": 10,
+        "step": 0.1,
+        "label": "Speed",
+        "group": "Effect"
+      }
+    },
+    "distortion": {
+      "default": 0.5,
+      "description": "Organic distortion intensity",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 2,
+        "step": 0.1,
+        "label": "Distortion",
+        "group": "Effect"
+      }
+    },
+    "seed": {
+      "default": 0,
+      "description": "Random seed for variation",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "label": "Seed",
+        "group": "Effect"
+      }
+    }
+  },
+  "defaults": {
+    "colorA": "#0a0015",
+    "colorB": "#6b17e6",
+    "colorC": "#ff4d6a",
+    "colorD": "#ff6b35",
+    "colorSpace": "oklch",
+    "speed": 1,
+    "distortion": 0.5,
+    "seed": 0
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.colorA": [
+      0.002496394095942378,
+      0.00010075335012516007,
+      0.006879868451505899,
+      1
+    ],
+    "n_n.colorB": [
+      0.1224455013871193,
+      0.013164165429770947,
+      0.7236244678497314,
+      1
+    ],
+    "n_n.colorC": [
+      0.8356376886367798,
+      0.10494430363178253,
+      0.15368734300136566,
+      1
+    ],
+    "n_n.colorD": [
+      0.8485649228096008,
+      0.17534101009368896,
+      0.06014273688197136,
+      1
+    ],
+    "n_n.colorSpace": 1,
+    "n_n.speed": 1,
+    "n_n.distortion": 0.5,
+    "n_n.seed": 0,
+    "n_n.convA": [
+      0.11390314388933212,
+      0.05847510242589543,
+      -0.9218540856176126,
+      0
+    ],
+    "n_n.convB": [
+      0.48988831071131145,
+      0.2639717023874878,
+      -1.2133209817380728,
+      0
+    ],
+    "n_n.convC": [
+      0.6779053505536137,
+      0.21297803390573958,
+      0.27523560666941776,
+      0
+    ],
+    "n_n.convD": [
+      0.7045166849302017,
+      0.1925945714567713,
+      0.684706737569347,
+      0
+    ]
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/FlowingGradient/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

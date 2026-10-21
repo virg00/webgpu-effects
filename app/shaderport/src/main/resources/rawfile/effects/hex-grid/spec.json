@@ -1,0 +1,216 @@
+{
+  "schema": 1,
+  "id": "hex-grid",
+  "name": "HexGrid",
+  "category": "Textures",
+  "layer": "background",
+  "cost": "low",
+  "role": "generator",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [],
+  "base": null,
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": null
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "colorA": {
+      "default": "#000000",
+      "description": "Cell fill color",
+      "ui": {
+        "type": "color",
+        "label": "Color A",
+        "group": "Colors"
+      }
+    },
+    "colorB": {
+      "default": "#ffffff",
+      "description": "Grid line color",
+      "ui": {
+        "type": "color",
+        "label": "Color B",
+        "group": "Colors"
+      }
+    },
+    "cells": {
+      "default": 8,
+      "description": "Number of hexagons along the canvas height (the width fits as many as the aspect ratio allows)",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 1,
+        "max": 40,
+        "step": 1,
+        "label": "Cells",
+        "group": "Effect"
+      }
+    },
+    "thickness": {
+      "default": 1,
+      "description": "Thickness of the hex grid lines",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 10,
+        "step": 0.1,
+        "label": "Thickness",
+        "group": "Effect"
+      }
+    },
+    "rotation": {
+      "default": 0,
+      "description": "Rotation of the grid in degrees",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 360,
+        "step": 1,
+        "label": "Rotation",
+        "group": "Effect"
+      }
+    },
+    "softness": {
+      "default": 0,
+      "description": "Softness of the line edges (0 = crisp, 1 = very soft)",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "label": "Softness",
+        "group": "Effect"
+      }
+    },
+    "variation": {
+      "default": 0,
+      "description": "Per-cell random lightening/darkening of the cell fill color",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.01,
+        "label": "Variation",
+        "group": "Effect"
+      }
+    },
+    "colorSpace": {
+      "default": "linear",
+      "description": "Color space for color interpolation",
+      "ui": {
+        "type": "select",
+        "options": [
+          {
+            "label": "Linear RGB",
+            "value": "linear"
+          },
+          {
+            "label": "OKLCh",
+            "value": "oklch"
+          },
+          {
+            "label": "OKLAB",
+            "value": "oklab"
+          },
+          {
+            "label": "HSL",
+            "value": "hsl"
+          },
+          {
+            "label": "HSV",
+            "value": "hsv"
+          },
+          {
+            "label": "LCH",
+            "value": "lch"
+          }
+        ],
+        "label": "Color Space",
+        "group": "Colors"
+      }
+    }
+  },
+  "defaults": {
+    "colorA": "#000000",
+    "colorB": "#ffffff",
+    "cells": 8,
+    "thickness": 1,
+    "rotation": 0,
+    "softness": 0,
+    "variation": 0,
+    "colorSpace": "linear"
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.colorA": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "n_n.colorB": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_n.cells": 8,
+    "n_n.thickness": 1,
+    "n_n.rotation": 0,
+    "n_n.softness": 0,
+    "n_n.variation": 0,
+    "n_n.colorSpace": 0
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/HexGrid/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}

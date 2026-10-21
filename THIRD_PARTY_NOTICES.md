@@ -1,0 +1,114 @@
+# Third-party notices
+
+`@virg00/webgpu-effects` 的代码按 [MIT](LICENSE) 授权。下列第三方组件随包或随仓库分发，各自保留原许可。
+
+## 随 HAR 分发
+
+| 组件 | 版本 | 位置 | 许可 |
+|---|---|---|---|
+| Shaders 引擎（npm `shaders`，Shader Effects Inc.） | 4.0.4 | `src/main/ets/engine/bundle.js`（构建时打补丁，见下）；生成的 `components.ts` | MIT — 全文见下 |
+| TypeGPU（打包在上游引擎内） | 随上游 | `bundle.js` | MIT |
+| colorjs.io（打包在上游引擎内） | 随上游 | `bundle.js` | MIT |
+| wgpu-native / wgpu-core / wgpu-hal / naga（gfx-rs） | wgpu-native 589e6ca，wgpu-hal 29.0.4 | 链接进 `libwebgpu_effects.so` | MIT OR Apache-2.0 |
+| WebGPU headers（`webgpu.h`） | 随 wgpu-native | `src/main/cpp/third_party/wgpu/include` | BSD-3-Clause |
+
+## 仅随仓库分发（不进 HAR）
+
+| 组件 | 位置 | 许可 |
+|---|---|---|
+| shaderport 0.1.0（quizzyjoy/shaderport）HAR 与其参考 GLES 渲染器，仅用于演示应用的对比页 | `app/shaderport`、`app/entry/src/main/cpp/shaderport` | Apache-2.0 — `app/shaderport/LICENSE`、`app/shaderport/NOTICE` |
+| 上游引擎原始 bundle 与效果注册表 | `upstream/` | MIT — `upstream/LICENSE` |
+
+shaderport 源码未修改，仅：HAR 模块名改为 `shaderport`（原为 `library`，并增加 `2in1` 设备类型），渲染器 NAPI 模块注册名改为 `shaderport_gles`（原为 `entry`）。
+
+## 本地补丁
+
+- `native/wgpu-hal-ohos.patch` — VK_OHOS_surface、`libvulkan.so` 加载名，以及针对 OpenHarmony 模拟器 Vulkan 驱动的兼容处理（零值 limits、缺失 TRANSFER 格式位、显式刷新映射内存、交换链重建、可选 binding-flags 结构）。
+- `native/wgpu-native-ohos.patch` — panic 信息转到日志回调；queue submit 与 surface configure 错误改为校验错误而不是中止进程。
+- `scripts/patch-bundle.mjs` — 规避方舟运行时"私有成员赋值表达式求值为 `true`"的缺陷（语义不变）；把引擎 60 fps 帧率上限改为可配置（`setMaxFrameRate`）。
+
+## Shaders engine — MIT License
+
+```
+MIT License
+
+Copyright (c) 2026 Shader Effects Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## wgpu — MIT License (dual-licensed MIT OR Apache-2.0; MIT chosen)
+
+```
+MIT License
+
+Copyright (c) 2021 The gfx-rs developers
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+## WebGPU headers — BSD 3-Clause License
+
+```
+BSD 3-Clause License
+
+Copyright (c) 2019, "WebGPU native" developers
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+```

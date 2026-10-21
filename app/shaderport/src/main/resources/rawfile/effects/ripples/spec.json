@@ -1,0 +1,198 @@
+{
+  "schema": 1,
+  "id": "ripples",
+  "name": "Ripples",
+  "category": "Textures",
+  "layer": "main",
+  "cost": "low",
+  "role": "generator",
+  "precision": "highp",
+  "glslVersion": "300 es",
+  "requires": [],
+  "base": null,
+  "ubo": {
+    "block": "combined_block_0Fragment",
+    "instance": "_group_0_binding_0_fs",
+    "node": "n",
+    "baseNode": null
+  },
+  "color": {
+    "input": "srgb",
+    "working": "p3-linear",
+    "output": "srgb-encoded",
+    "alpha": "straight",
+    "note": "uniform colours are resolved at export time in the upstream working space (P3-linear by default); do not re-convert. The final pass already applies the sRGB OETF; do not encode again."
+  },
+  "passes": [
+    {
+      "index": 0,
+      "key": "final",
+      "file": "passes/final.glsl",
+      "entry": "final_1",
+      "samplers": []
+    }
+  ],
+  "props": {
+    "center": {
+      "default": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "description": "The center point where ripples emanate from",
+      "ui": {
+        "type": "position",
+        "label": "Center",
+        "group": "Position"
+      }
+    },
+    "colorA": {
+      "default": "#ffffff",
+      "description": "Color of the ripple waves",
+      "ui": {
+        "type": "color",
+        "label": "Color A",
+        "group": "Colors"
+      }
+    },
+    "colorB": {
+      "default": "#000000",
+      "description": "Background color between ripples",
+      "ui": {
+        "type": "color",
+        "label": "Color B",
+        "group": "Colors"
+      }
+    },
+    "speed": {
+      "default": 1,
+      "description": "Speed of ripple animation",
+      "ui": {
+        "type": "range",
+        "min": -5,
+        "max": 5,
+        "step": 0.1,
+        "label": "Speed",
+        "group": "Animation"
+      }
+    },
+    "frequency": {
+      "default": 20,
+      "description": "Number of ripples/spacing between them",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 1,
+        "max": 80,
+        "step": 0.1,
+        "label": "Frequency",
+        "group": "Effect"
+      }
+    },
+    "softness": {
+      "default": 0,
+      "description": "Softness of ripple edges",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 3,
+        "step": 0.1,
+        "label": "Softness",
+        "group": "Effect"
+      }
+    },
+    "thickness": {
+      "default": 0.5,
+      "description": "Thickness of each ripple band",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "label": "Thickness",
+        "group": "Effect"
+      }
+    },
+    "phase": {
+      "default": 0,
+      "description": "Phase offset for ripple animation",
+      "ui": {
+        "type": [
+          "range",
+          "map"
+        ],
+        "min": 0,
+        "max": 6.28,
+        "step": 0.1,
+        "label": "Phase",
+        "group": "Animation"
+      }
+    }
+  },
+  "defaults": {
+    "center": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "colorA": "#ffffff",
+    "colorB": "#000000",
+    "speed": 1,
+    "frequency": 20,
+    "softness": 0,
+    "thickness": 0.5,
+    "phase": 0
+  },
+  "validation": {
+    "pixelDiff": {
+      "meanAbs": 1,
+      "over8Ratio": 0.01,
+      "bandMean": 2
+    }
+  },
+  "resolved": {
+    "n_n.center": [
+      0.5,
+      0.5,
+      0,
+      0
+    ],
+    "n_n.colorA": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "n_n.colorB": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "n_n.speed": 1,
+    "n_n.frequency": 20,
+    "n_n.softness": 0,
+    "n_n.thickness": 0.5,
+    "n_n.phase": 0
+  },
+  "reference": {
+    "file": "reference.png",
+    "width": 512,
+    "height": 512,
+    "time": 1
+  },
+  "provenance": {
+    "class": "ported",
+    "repo": "shader-effects-inc/shaders",
+    "version": "v4.0.4",
+    "path": "packages/core/src/shaders/Ripples/index.ts",
+    "license": "MIT",
+    "copyright": "© 2026 Shader Effects Inc."
+  }
+}
