@@ -1,3 +1,4 @@
+// From quizzyjoy/shaderport 0.1.0 (harmony/entry/src/main/cpp), Apache-2.0 — see app/shaderport/LICENSE and NOTICE. Unmodified.
 #include "renderer.h"
 
 #include <EGL/eglext.h>

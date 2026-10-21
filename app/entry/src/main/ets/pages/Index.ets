@@ -194,6 +194,13 @@ struct Index {
             this.row(e)
           }
         }, (e: CatalogEntry) => e.name)
+        ListItem() {
+          Text('开源许可 ›')
+            .fontSize(12).fontColor('#80FFFFFF')
+            .width('100%').textAlign(TextAlign.Center)
+            .padding({ top: 20, bottom: 36 })
+            .onClick(() => router.pushUrl({ url: 'pages/Licenses' }))
+        }
       }
       .width('100%').layoutWeight(1)
       .cachedCount(6)

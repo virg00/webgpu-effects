@@ -22,6 +22,7 @@
 | `app/webgpu-effects/src/main/ets/components/components.ts`、演示应用 `catalog.json` | `scripts/gen-components.mjs` |
 | `docs/effects.md` | `scripts/gen-effects-doc.py` |
 | 演示应用 `compare-report.json` | `scripts/build-compare-report.py` |
+| `THIRD_PARTY_NOTICES.md` | `scripts/gen-notices.py`（升级上游或 wgpu 后必须重跑） |
 
 ## 验证
 
@@ -40,4 +41,4 @@ docs: add Mate 70 to device matrix
 
 ## 许可
 
-提交即表示同意你的贡献按 [MIT](LICENSE) 授权。引入第三方代码需保留其许可并登记到 `THIRD_PARTY_NOTICES.md`。
+提交即表示同意你的贡献按 [MIT](LICENSE) 授权。引入第三方代码需保留其许可，并重新生成 `THIRD_PARTY_NOTICES.md`。

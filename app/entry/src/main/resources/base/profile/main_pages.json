@@ -1,1 +1,1 @@
-{ "src": [ "pages/Index", "pages/Detail", "pages/Test", "pages/CompareMenu", "pages/CompareDetail", "pages/Analysis" ] }
+{ "src": [ "pages/Index", "pages/Detail", "pages/Test", "pages/CompareMenu", "pages/CompareDetail", "pages/Analysis", "pages/Licenses" ] }

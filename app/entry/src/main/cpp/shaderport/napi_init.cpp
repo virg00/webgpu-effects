@@ -1,3 +1,5 @@
+// From quizzyjoy/shaderport 0.1.0 (harmony/entry/src/main/cpp), Apache-2.0 — see app/shaderport/LICENSE and NOTICE.
+// Modified by webgpu-effects (2026-10-21): NAPI module registered as "shaderport_gles" (was "entry").
 #include <napi/native_api.h>
 
 #include <string>

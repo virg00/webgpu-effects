@@ -1,3 +1,5 @@
+// Modified by webgpu-effects (2026-10-21): module name "library" → "shaderport", added the "2in1" device type.
+// Original: quizzyjoy/shaderport 0.1.0, Apache-2.0 — see ../../LICENSE and ../../NOTICE.
 {
   "module": {
     "name": "shaderport",

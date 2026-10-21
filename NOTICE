@@ -5,9 +5,11 @@ Licensed under the MIT License (see LICENSE).
 
 This product bundles third-party software:
 
-- The Shaders engine (npm package `shaders` 4.0.4), Copyright (c) 2026 Shader Effects Inc., MIT License.
-  It includes TypeGPU (MIT) and colorjs.io (MIT).
-- wgpu / wgpu-native (https://github.com/gfx-rs/wgpu-native), MIT OR Apache-2.0.
+- The Shaders engine (npm package `shaders` 4.0.4), Copyright (c) 2026 Shader Effects Inc., MIT License,
+  modified by scripts/patch-bundle.mjs. It inlines TypeGPU and tinyest (MIT, Copyright (c) 2025 Software Mansion),
+  typed-binary (MIT, Copyright (c) 2026 Iwo Plaza) and tsover-runtime (Apache-2.0).
+- wgpu-native and its Rust dependencies (https://github.com/gfx-rs/wgpu-native), MIT OR Apache-2.0 and others,
+  with local patches (native/*.patch).
 - WebGPU headers (https://github.com/webgpu-native/webgpu-headers), BSD-3-Clause.
 
 webgpu-effects is an independent project. It is not affiliated with, endorsed by, or sponsored by

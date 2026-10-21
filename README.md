@@ -206,6 +206,7 @@ LAP-AL10 实测（48 个效果，单独全屏 5 秒平均），逐效果数据�
 scripts/build.sh             # 构建演示 HAP（未签名；真机签名见 docs/signing.md）
 scripts/build-har.sh         # 构建发布用 HAR → build/har/
 scripts/sync-upstream.sh     # 同步上游新版本：拉取 npm 包、打补丁、重新生成类型与目录
+python3 -I scripts/gen-notices.py  # 重新生成第三方许可（升级上游 / wgpu 后）
 scripts/build-wgpu.sh        # 交叉编译 wgpu-native（仓库已附带 arm64 静态库，一般不需要）
 ```
 
@@ -226,4 +227,8 @@ scripts/build-wgpu.sh        # 交叉编译 wgpu-native（仓库已附带 arm64 
 ## 许可
 
 本项目代码采用 [MIT](LICENSE)。包内附带的上游引擎（MIT，© Shader Effects Inc.）、wgpu（MIT / Apache-2.0）等第三方组件的
-许可见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。演示应用中用于对比的 shaderport 为 Apache-2.0。
+许可见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)（由 `scripts/gen-notices.py` 按实际打包内容生成，含每个组件的许可全文）。
+
+- 发布的 HAR：包内 `LICENSE` = 本项目 MIT 许可 + 全部第三方许可全文；`bundle.js` 文件头保留上游版权声明并注明修改。
+- 演示应用：「开源许可」页展示同样的内容以及 shaderport 的 Apache-2.0 许可与 NOTICE。
+- 仓库中的 shaderport 副本保留其 `LICENSE` / `NOTICE`，修改过的文件在文件头注明修改内容。

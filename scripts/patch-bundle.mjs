@@ -92,5 +92,15 @@ if (gates !== 1) throw new Error(`expected exactly one 60 fps frame gate, found 
 result = result.replace(GATE, 'Math.max(globalThis.__SHADERS_MIN_FRAME_INTERVAL ?? 15.666666666666668,');
 
 acorn.parse(result, { ecmaVersion: 'latest', sourceType: 'module' }); // sanity: still valid JS
-writeFileSync(out, `// Upstream shaders engine (dist/js/bundle.js), patched by scripts/patch-bundle.mjs for the Ark runtime.\n${result}`);
+const NOTICE = `/*
+ * Shaders engine — dist/js/bundle.js of the \`shaders\` npm package (https://github.com/shader-effects-inc/shaders).
+ * Copyright (c) 2026 Shader Effects Inc. Licensed under the MIT License.
+ * Inlines TypeGPU and tinyest (MIT, Copyright (c) 2025 Software Mansion), typed-binary (MIT, Copyright (c) 2026 Iwo Plaza)
+ * and tsover-runtime (Apache-2.0, Software Mansion). Full license texts: THIRD_PARTY_NOTICES.md / the package LICENSE.
+ *
+ * Modified by webgpu-effects: patched by scripts/patch-bundle.mjs for the Ark runtime (private-member assignment
+ * expressions rewritten to equivalent comma expressions; the 60 fps frame cap made configurable).
+ */
+`;
+writeFileSync(out, NOTICE + result);
 console.log(`${count} private-member assignment expression(s) rewritten, frame cap made configurable → ${out}`);

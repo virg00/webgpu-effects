@@ -5,6 +5,9 @@ source "$(dirname "$0")/env.sh"
 MODE="${1:-debug}"
 PRODUCT="${PRODUCT:-default}"   # PRODUCT=devtest builds the signed variant for real phones
 cd "$ROOT/app"
+# The demo bundles the library and shaderport: ship every license text with it (shown on the 开源许可 page).
+{ cat "$ROOT/LICENSE"; printf '\n\n'; cat "$ROOT/THIRD_PARTY_NOTICES.md"; printf '\n\n==== shaderport (app/shaderport) ====\n\n';
+  cat "$ROOT/app/shaderport/NOTICE"; printf '\n\n'; cat "$ROOT/app/shaderport/LICENSE"; } > entry/src/main/resources/rawfile/licenses.txt
 [ -d oh_modules ] || ohpm install >/dev/null
 if [ "$PRODUCT" != default ]; then
   # Local-only products and signing (app/signing.local.json, not in git) are merged in for this build.
