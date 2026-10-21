@@ -116,6 +116,50 @@ LAP-AL10（HarmonyOS 7.0）实测 48 个效果平均：屏幕 60Hz 时 60 fps，
 16 个静态效果与上游原版（浏览器 WebGPU）平均像素差异 0.45%。逐效果数据见
 [device-matrix](https://github.com/virg00/webgpu-effects/blob/main/docs/device-matrix.md)。
 
+## 目录结构
+
+```
+webgpu-effects/
+├── Index.ets                      # ArkTS 出口
+└── src/main/
+    ├── ets/
+    │   ├── components/
+    │   │   ├── ShaderView.ets     # ArkUI 组件与 ShaderController
+    │   │   ├── components.ts      # 199 个效果的工厂函数与参数类型（由上游注册表生成）
+    │   │   └── types.ts           # 图层、属性驱动、预设等公共类型
+    │   └── engine/
+    │       ├── host.ts            # 图层树 → 上游预设、增量更新、媒体解析
+    │       ├── bundle.js          # 上游引擎（shaders 4.0.4，已打补丁）
+    │       ├── runtime.js         # 浏览器环境垫片（rAF / 2D 画布 / 图片 / 视频 / 摄像头）
+    │       └── webgpu.js          # navigator.gpu 与 GPU* 类
+    └── cpp/                       # → libs/arm64-v8a/libwebgpu_effects.so（NAPI + wgpu-native / Vulkan）
+```
+
+## 文档
+
+| 文档 | 链接 |
+|---|---|
+| 使用指南 | https://github.com/virg00/webgpu-effects/blob/main/docs/usage-guide.md |
+| 效果目录（199 个，含中文说明） | https://github.com/virg00/webgpu-effects/blob/main/docs/effects.md |
+| 设计说明 | https://github.com/virg00/webgpu-effects/blob/main/docs/design.md |
+| 设备矩阵与实测数据 | https://github.com/virg00/webgpu-effects/blob/main/docs/device-matrix.md |
+| 与 shaderport 的对比 | https://github.com/virg00/webgpu-effects/blob/main/COMPARISON.md |
+| 签名与真机测试 | https://github.com/virg00/webgpu-effects/blob/main/docs/signing.md |
+| 来源与命名 | https://github.com/virg00/webgpu-effects/blob/main/docs/provenance-and-naming.md |
+| 第三方声明 | https://github.com/virg00/webgpu-effects/blob/main/THIRD_PARTY_NOTICES.md |
+
+## 贡献
+
+问题反馈与 PR：https://github.com/virg00/webgpu-effects
+
+- `bundle.js`、`components.ts` 是生成文件，不要手改：上游升级用 `scripts/sync-upstream.sh`；
+- 运行时或 WebGPU 实现的改动需在真机上跑 `scripts/sweep.sh` 全量验证；
+- 详细规范见 https://github.com/virg00/webgpu-effects/blob/main/CONTRIBUTING.md
+
 ## 开源协议
 
-[MIT](https://github.com/virg00/webgpu-effects/blob/main/LICENSE)。源码：https://github.com/virg00/webgpu-effects
+本包以 **MIT** 发布。包内的上游引擎（shaders 4.0.4，© Shader Effects Inc.，MIT）及其内联依赖（TypeGPU、tinyest、typed-binary：MIT；
+tsover-runtime：Apache-2.0）、链接进原生库的 wgpu 及其 Rust 依赖（MIT / Apache-2.0 等）的许可全文已并入包内 `LICENSE`，
+另见 [THIRD_PARTY_NOTICES](https://github.com/virg00/webgpu-effects/blob/main/THIRD_PARTY_NOTICES.md)。
+
+源码：https://github.com/virg00/webgpu-effects
